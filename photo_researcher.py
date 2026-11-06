@@ -1,99 +1,49 @@
-"""Source-aware, editor-supervised public-image importer.
-
-No Google/Bing scraping and no image-search thumbnail extraction. An editor/agent
-selects an exact image file URL and its original page/credit. The resulting local
-JPEG starts UNAPPROVED. URLs are validated before any network activity.
-"""
+"""Editor-selected image import. Downloads never grant image approval."""
 from __future__ import annotations
-
-from ipaddress import ip_address
-import socket
-from urllib.parse import urlparse, urljoin
-from urllib.request import build_opener, HTTPSHandler, HTTPRedirectHandler, ProxyHandler, Request
-from urllib.error import HTTPError, URLError
-from PIL import Image, ImageOps, UnidentifiedImageError
 from io import BytesIO
+from pathlib import Path
+import os,subprocess,sys
+from PIL import Image,UnidentifiedImageError
+from engine import PublicationError,import_image,load,store,serialized
+from image_transport import safe_photo_url as _safe_photo_url,DownloadError
 
-from engine import PublicationError, import_image, load, store
+MAX_IMAGE_BYTES=14_000_000
+MAX_DOWNLOAD_SECONDS=18
+DOWNLOAD_WORKER=Path(__file__).with_name('image_transport.py')
 
-MAX_IMAGE_BYTES = 14_000_000
-MAX_REDIRECTS = 2
-MAX_DOWNLOAD_SECONDS = 18
-
-
-def safe_photo_url(url: str, *, dns: bool = False) -> str:
-    u=urlparse(str(url).strip())
-    if u.scheme != 'https' or not u.hostname or u.username or u.password:
-        raise PublicationError('Photo URL must be a direct https:// image address without login details')
-    if u.port not in (None,443):
-        raise PublicationError('Only standard HTTPS image URLs are supported')
-    host=u.hostname.lower().rstrip('.')
-    if host == 'localhost' or host.endswith(('.local','.internal','.localhost')):
-        raise PublicationError('Private/local network addresses are not allowed')
-    try:
-        ip=ip_address(host)
-        if not ip.is_global:
-            raise PublicationError('Local or private IP addresses are not allowed')
-    except ValueError:
-        pass
-    if dns:
-        try:
-            ips={v[4][0] for v in socket.getaddrinfo(host,443,proto=socket.IPPROTO_TCP)}
-        except OSError as ex:
-            raise PublicationError('Could not resolve the image server hostname') from ex
-        if not ips or not all(ip_address(x).is_global for x in ips):
-            raise PublicationError('The image URL resolves to a private or restricted network address')
-    return u.geturl()
-
-
-class _NoRedirect(HTTPRedirectHandler):
-    def redirect_request(self,req,fp,code,msg,headers,newurl):
-        return None
-
+def safe_photo_url(url: str, *, dns: bool=False) -> str:
+    try:return _safe_photo_url(url,dns=dns)
+    except (DownloadError,ValueError) as ex:raise PublicationError(str(ex)) from ex
 
 def _download_image(url: str) -> bytes:
-    opener=build_opener(ProxyHandler({}),HTTPSHandler(),_NoRedirect())
-    url=safe_photo_url(url,dns=True)
-    for _ in range(MAX_REDIRECTS+1):
-        req=Request(url,headers={'User-Agent':'EditorialStudioPhotoResearcher/0.2 (+human-supervised)','Accept':'image/jpeg,image/png,image/webp'})
-        try:
-            r=opener.open(req,timeout=MAX_DOWNLOAD_SECONDS)
-        except HTTPError as ex:
-            if ex.code in (301,302,303,307,308) and ex.headers.get('Location'):
-                url=safe_photo_url(urljoin(url,ex.headers['Location']),dns=True)
-                continue
-            raise PublicationError(f'Photo host returned HTTP {ex.code}') from ex
-        except (OSError,URLError) as ex:
-            raise PublicationError('Photo host could not be reached; try downloading the photo manually') from ex
-        with r:
-            ctype=r.headers.get('Content-Type','').split(';')[0].strip().lower()
-            if ctype not in ('image/jpeg','image/png','image/webp','application/octet-stream'):
-                raise PublicationError(f'URL did not return a supported image (received {ctype or "no type"})')
-            declared=int(r.headers.get('Content-Length') or 0)
-            if declared>MAX_IMAGE_BYTES:
-                raise PublicationError('Photo file is too large (14 MB maximum)')
-            parts=[];size=0
-            while True:
-                chunk=r.read(min(256_000,MAX_IMAGE_BYTES-size+1))
-                if not chunk:break
-                size+=len(chunk)
-                if size>MAX_IMAGE_BYTES:
-                    raise PublicationError('Photo download exceeded 14 MB')
-                parts.append(chunk)
-            data=b''.join(parts)
-            try:
-                with Image.open(BytesIO(data)) as im:
-                    if im.format not in ('JPEG','PNG','WEBP'):
-                        raise PublicationError('Unsupported image encoding')
-                    if im.width*im.height>50_000_000:
-                        raise PublicationError('Image is too large in pixels')
-                    im.verify()
-            except (UnidentifiedImageError,OSError) as ex:
-                raise PublicationError('Downloaded resource is not a readable image') from ex
-            return data
-    raise PublicationError('Photo URL redirected too many times')
+    url=safe_photo_url(url)
+    # A killable worker bounds DNS, TLS, header parsing and body reads together.
+    # It uses only the standard library and receives no application/session state.
+    env={'PYTHONDONTWRITEBYTECODE':'1'}
+    for key in ('SystemRoot','WINDIR'):
+        if key in os.environ:env[key]=os.environ[key]
+    try:
+        result=subprocess.run([sys.executable,str(DOWNLOAD_WORKER)],input=url.encode('utf-8'),
+            stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=MAX_DOWNLOAD_SECONDS,
+            env=env,creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0),check=False)
+    except subprocess.TimeoutExpired as ex:
+        raise PublicationError('Photo download timed out') from ex
+    except OSError as ex:
+        raise PublicationError('Could not start the image downloader') from ex
+    if result.returncode:
+        raise PublicationError('The selected image could not be downloaded safely')
+    data=result.stdout
+    if not data or len(data)>MAX_IMAGE_BYTES:raise PublicationError('Invalid photo size (14 MB max)')
+    try:
+        with Image.open(BytesIO(data),formats=('JPEG','PNG','WEBP')) as im:
+            if im.width*im.height>50_000_000:raise PublicationError('Image is too large in pixels')
+            im.verify()
+    except (UnidentifiedImageError,Image.DecompressionBombError,OSError) as ex:
+        raise PublicationError('Downloaded resource is not a readable JPEG, PNG or WebP image') from ex
+    return data
 
 
+@serialized
 def import_public_image(slug: str, slot: str, image_url: str, source_page: str,
                         credit: str, rights: str, *, evidence: str = '', downloader=None) -> dict:
     """A selected URL is *not* license proof. Reviewer approval is always reset."""

@@ -1,6 +1,6 @@
 # Security policy
 
-Editorial Studio is a local single-user prototype. It is not a hosted application or a multiuser service.
+Editorial Studio is a local single-user application. It is not a hosted application or a multiuser service.
 
 ## Reporting issues
 
@@ -10,10 +10,13 @@ Until a dedicated security contact is configured, report vulnerabilities private
 
 - The dashboard binds to `127.0.0.1` and checks Host, request Origin, JSON type and a random per-process token for mutations.
 - Local projects, output PDFs and uploaded photos are ignored by Git and must not be committed.
-- The external HTTPS image importer includes DNS and size checks, but the TLS/DNS connection has not been penetration-tested for DNS rebinding or malicious content. Do not deploy this importer on an internet-facing server.
+- The HTTPS importer pins validated public addresses while preserving TLS hostname verification. A separate, killable worker bounds DNS, connection, headers and transfer time. Images remain subject to human approval. Do not deploy this importer on an internet-facing server.
 - Photo ownership and usage permission are manually reviewed; no automated approval can prove rights.
 - Do not use the app to process confidential assets on shared or untrusted computers.
-- Dependencies use bounded ranges, not cryptographic lockfiles. Pin/harden before publishing installers or a hosted offering.
+- Runtime dependencies are pinned with wheel hashes in requirements.lock. CI checks known advisories; a clean scan is not proof that every dependency path is safe.
+- Private reads reject cross-origin browser requests and carry same-origin resource policy. The local token is a browser request guard, not OS-user authentication; use a trusted single-user computer.
+- Release ZIPs use release-files.json rather than directory enumeration. Never add private working material to that inventory.
+- Source review and sandbox tests are recorded in the release-readiness document. They do not certify a hosted or multiuser deployment.
 
 ## Before public distribution
 

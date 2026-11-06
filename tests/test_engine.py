@@ -54,6 +54,15 @@ class EngineTests(unittest.TestCase):
                           'rights':'own','approved':True,'width':1900,'height':1280})
         engine.store(doc['slug'],doc)
 
+    def test_custom_https_port_is_preserved_in_pdf_links(self):
+        self.add_synthetic_images(self.doc)
+        story=self.doc['stories'][0]
+        engine.update_story(self.doc['slug'],story['id'],{'website':'https://example.org:8443/source'})
+        result=engine.export(self.doc['slug'])
+        self.assertTrue(result['pass'])
+        with engine.fitz.open(result['file']) as document:
+            self.assertTrue(any(link.get('uri')=='https://example.org:8443/source' for page in document for link in page.get_links()))
+
     def test_preflight_blocks_missing_images(self):
         pf=engine.preflight(self.doc)
         self.assertFalse(pf['pass'])

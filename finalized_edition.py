@@ -1,7 +1,8 @@
 """Re-export an explicitly registered, reviewed custom edition without relayout."""
 import hashlib,json,shutil
 from pathlib import Path
-import fitz
+import pymupdf as fitz
+from local_files import temporary_path,atomic_write
 
 def document_digest(doc):
     return hashlib.sha256(json.dumps(doc,sort_keys=True,ensure_ascii=False).encode()).hexdigest()
@@ -32,12 +33,12 @@ def inspect_edition(directory,doc):
 
 def publish_edition(spec,doc,output):
     output.parent.mkdir(parents=True,exist_ok=True)
-    temporary=output.with_suffix('.part')
+    temporary=temporary_path(output)
     try:
         shutil.copyfile(spec['pdf_path'],temporary)
         if hashlib.sha256(temporary.read_bytes()).hexdigest()!=spec['pdf_sha256']:raise ValueError('Export copy verification failed')
         temporary.replace(output)
     finally:
         temporary.unlink(missing_ok=True)
-    snapshot=output.with_suffix('.manifest.json');snapshot.write_text(json.dumps(doc,ensure_ascii=False,indent=2),encoding='utf-8')
-    return dict(pass_=True,**{'pass':True},errors=[],pages=spec['pages'],photo_pages_verified=len(spec['photo_pages']),links=spec['links'],bytes=output.stat().st_size,file=str(output),snapshot=str(snapshot),reviewed_edition=True)
+    snapshot=output.with_suffix('.manifest.json');atomic_write(snapshot,json.dumps(doc,ensure_ascii=False,indent=2).encode('utf-8'))
+    return dict(**{'pass':True},errors=[],pages=spec['pages'],photo_pages_verified=len(spec['photo_pages']),links=spec['links'],bytes=output.stat().st_size,file=str(output),snapshot=str(snapshot),reviewed_edition=True)

@@ -4,6 +4,7 @@ import argparse
 import base64
 import json
 import secrets
+import socket
 import mimetypes
 import os
 import re
@@ -13,7 +14,7 @@ import webbrowser
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit, unquote
-from threading import Timer
+from threading import Timer,BoundedSemaphore,Event
 
 from engine import (ROOT, OUTPUTS, PROJECTS, PublicationError, add_story, create_project,
                     export, import_image, list_projects, load, path_for, preflight,
@@ -25,8 +26,50 @@ PORT = 8765
 MAX_BODY=20_000_000
 SESSION_TOKEN=secrets.token_urlsafe(32)
 
+class LocalServer(ThreadingHTTPServer):
+    """Bound concurrent local work without creating an unbounded thread queue."""
+    request_queue_size=8
+    def __init__(self,*args,**kwargs):
+        self._slots=BoundedSemaphore(8)
+        super().__init__(*args,**kwargs)
+    def process_request(self,request,client_address):
+        if not self._slots.acquire(blocking=False):
+            self.shutdown_request(request)
+            return
+        try:super().process_request(request,client_address)
+        except Exception:
+            self._slots.release()
+            raise
+    def process_request_thread(self,request,client_address):
+        try:super().process_request_thread(request,client_address)
+        finally:self._slots.release()
+
 class Handler(BaseHTTPRequestHandler):
-    server_version="EditorialStudio/0.3"
+    server_version="EditorialStudio/0.4"
+
+    def setup(self):
+        super().setup()
+        self.connection.settimeout(5)
+
+    def _stop_reading(self):
+        try:self.connection.shutdown(socket.SHUT_RD)
+        except OSError:pass
+
+    def handle_one_request(self):
+        self._header_timer=Timer(5,self._stop_reading)
+        self._header_timer.daemon=True
+        self._header_timer.start()
+        try:super().handle_one_request()
+        finally:self._header_timer.cancel()
+
+    def parse_request(self):
+        try:return super().parse_request()
+        finally:self._header_timer.cancel()
+
+    def _header_values(self,name):
+        if hasattr(self.headers,'get_all'):return self.headers.get_all(name,[])
+        value=self.headers.get(name)
+        return [] if value is None else [value]
 
     def log_message(self, fmt, *args):
         print("[studio]", fmt % args)
@@ -39,6 +82,8 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Cache-Control","no-store")
         self.send_header("X-Content-Type-Options","nosniff")
         self.send_header("X-Frame-Options","DENY")
+        self.send_header("Cross-Origin-Resource-Policy","same-origin")
+        self.send_header("Cross-Origin-Opener-Policy","same-origin")
         self.send_header("Referrer-Policy","no-referrer")
         self.send_header("Content-Security-Policy","default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'")
         if download:self.send_header("Content-Disposition",f'attachment; filename="{download}"')
@@ -55,10 +100,10 @@ class Handler(BaseHTTPRequestHandler):
 
     def _trusted_local_host(self):
         port=self.server.server_port
-        return self.headers.get("Host","") in (f"127.0.0.1:{port}",f"localhost:{port}")
+        return len(self._header_values("Host"))==1 and self.headers.get("Host","") in (f"127.0.0.1:{port}",f"localhost:{port}")
 
     def do_GET(self):
-        if not self._trusted_local_host():
+        if not self._trusted_local_host() or self._reject_cross_origin() or self.headers.get("Sec-Fetch-Site", "none") not in ("same-origin","none"):
             return self._response(403,{"error":"Invalid local Host header"})
         try:
             p=urlsplit(self.path)
@@ -96,6 +141,9 @@ class Handler(BaseHTTPRequestHandler):
         # Consume bounded request bytes before rejecting headers. Closing a socket
         # with unread POST data can reset the connection on Windows, hiding the
         # intended JSON error response from the client.
+        if self._header_values("Transfer-Encoding") or len(self._header_values("Content-Length"))!=1:
+            self.close_connection=True
+            return self._response(400,{"error":"Ambiguous request framing"})
         try:
             n=int(self.headers.get("Content-Length", "0"))
         except ValueError:
@@ -103,10 +151,17 @@ class Handler(BaseHTTPRequestHandler):
         if n<=0 or n>MAX_BODY:
             return self._response(413,{"error":"Invalid request size (20 MB max)"})
         self.connection.settimeout(5)
+        expired=Event()
+        def expire():
+            expired.set()
+            self._stop_reading()
+        deadline=Timer(5,expire);deadline.daemon=True;deadline.start()
         try:
             body=self.rfile.read(n)
         except TimeoutError:
             return self._response(408,{"error":"Request body timed out"})
+        finally:deadline.cancel()
+        if expired.is_set():return self._response(408,{"error":"Request body timed out"})
         if len(body)!=n:
             return self._response(400,{"error":"Incomplete request body"})
         if not self._trusted_local_host() or self._reject_cross_origin():
@@ -117,6 +172,11 @@ class Handler(BaseHTTPRequestHandler):
             return self._response(403,{"error":"Missing or invalid studio session token"})
         try:
             data=json.loads(body.decode("utf-8"))
+            if not isinstance(data,dict):raise PublicationError('Expected a JSON object')
+            for key in ('changes','brief'):
+                if key in data and not isinstance(data[key],dict):raise PublicationError(key+' must be an object')
+            for key in ('slug','slot','story_id','style_id','image_url','source','credit','rights'):
+                if key in data and not isinstance(data[key],str):raise PublicationError(key+' must be text')
             p=urlsplit(self.path).path
             if p=="/api/create":
                 project=create_project(str(data.get("title","")),str(data.get("kind","magazine")),str(data.get("description","")),str(data.get("edition","")),data.get('brief',{}))
@@ -172,7 +232,7 @@ def main():
             return 0
         if args.command in (None,"serve"):
             port=args.port if args.command=="serve" else PORT
-            with ThreadingHTTPServer(("127.0.0.1",port),Handler) as server:
+            with LocalServer(("127.0.0.1",port),Handler) as server:
                 print(f"\nEditorial Studio is running: http://127.0.0.1:{port}\nOnly accessible on this computer. Press Ctrl+C to stop.\n",flush=True)
                 Timer(1.2,lambda:webbrowser.open(f"http://127.0.0.1:{port}")).start()
                 server.serve_forever()

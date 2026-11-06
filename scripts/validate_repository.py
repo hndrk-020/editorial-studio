@@ -32,6 +32,10 @@ if (SKILL/'SKILL.md').exists():
            'Skill name must match installation name')
     require(re.search(r'^description:\s*\S',front,re.M) is not None,
            'Skill description is missing')
+source_names={p.relative_to(SKILL).as_posix() for p in SKILL.rglob('*') if p.is_file()}
+mirror=PLUGIN/'skills/editorial-studio'
+mirror_names={p.relative_to(mirror).as_posix() for p in mirror.rglob('*') if p.is_file()}
+require(source_names==mirror_names,'Skill directory file lists differ')
 for sf in sorted(SKILL.rglob('*')):
     if sf.is_file():
         relative=sf.relative_to(SKILL)
@@ -48,8 +52,15 @@ try:
     require(any(x.get('source',{}).get('path')=='./plugins/editorial-studio' for x in marketplace.get('plugins',[])),
             'Local marketplace must reference portable plugin directory')
 except Exception as ex:ERRORS.append(f'Invalid marketplace JSON: {ex}')
-for path in ROOT.glob('**/.env'):
-    if '.venv' not in path.parts:ERRORS.append(f'Unexpected secret-like file: {path.relative_to(ROOT)}')
+for reference in re.findall(r'references/[A-Za-z0-9_.-]+\.md',(SKILL/'SKILL.md').read_text(encoding='utf-8')):
+    require((SKILL/reference).is_file(),'Missing skill reference: '+reference)
+try:
+    from package_release import release_files
+    inventory={p.relative_to(ROOT).as_posix() for p in release_files(ROOT)}
+    required={'studio.py','engine.py','creative.py','photo_researcher.py','image_transport.py','finalized_edition.py','local_files.py','requirements.txt','requirements.lock','release-files.json'}
+    require(required<=inventory,'Release inventory omits runtime files')
+    require(all('.agents/skills/editorial-studio/'+n in inventory and 'plugins/editorial-studio/skills/editorial-studio/'+n in inventory for n in source_names),'Release inventory omits skill resources')
+except (OSError,ValueError,TypeError) as ex:ERRORS.append('Invalid release inventory: '+str(ex))
 if ERRORS:
     print('NOT GITHUB-READY:')
     for error in ERRORS:print(' - '+error)

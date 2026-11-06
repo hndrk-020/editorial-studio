@@ -19,7 +19,10 @@ from reportlab.lib.colors import HexColor, Color
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfbase.pdfmetrics import stringWidth
-import fitz
+import pymupdf as fitz
+from functools import wraps
+from threading import RLock
+from local_files import temporary_path, atomic_write
 
 ROOT = Path(__file__).resolve().parent
 PROJECTS = ROOT / "projects"
@@ -44,6 +47,14 @@ W, H = A4
 
 class PublicationError(Exception):
     pass
+
+_STATE_LOCK=RLock()
+def serialized(function):
+    """Keep local edits and export snapshots coherent across request threads."""
+    @wraps(function)
+    def guarded(*args, **kwargs):
+        with _STATE_LOCK:return function(*args, **kwargs)
+    return guarded
 
 
 def slugify(value: str) -> str:
@@ -73,21 +84,21 @@ def load(slug: str) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+@serialized
 def store(slug: str, doc: dict):
     if doc.get("slug") != slug:
         raise PublicationError("Project slug cannot change")
     p = path_for(slug)
     p.mkdir(parents=True, exist_ok=True)
     # Atomic write to avoid a half-written manifest after application shutdown.
-    temp = p / "manifest.json.tmp"
-    temp.write_text(json.dumps(doc, ensure_ascii=False, indent=2), encoding="utf-8")
-    temp.replace(p / "manifest.json")
+    atomic_write(p / "manifest.json", json.dumps(doc, ensure_ascii=False, indent=2).encode("utf-8"))
 
 
 def blank_image() -> dict:
     return {"file": "", "source": "", "credit": "", "rights": "", "evidence":"", "approved": False, "width": 0, "height": 0}
 
 
+@serialized
 def create_project(title: str, kind="magazine", description="", edition="", brief=None) -> dict:
     if kind not in ("magazine", "onepager"):
         raise PublicationError("Unknown publication template")
@@ -121,7 +132,9 @@ def _asset_file(slug: str, photo: dict) -> Path | None:
     name = photo.get("file", "")
     if not name or not re.fullmatch(r"[a-z0-9_-]+\.jpg", name):
         return None
-    folder = (path_for(slug) / "assets").resolve()
+    project = path_for(slug)
+    folder = (project / "assets").resolve()
+    if folder.parent != project:return None
     resolved = (folder / name).resolve()
     return resolved if resolved.parent == folder else None
 
@@ -129,7 +142,8 @@ def _asset_file(slug: str, photo: dict) -> Path | None:
 def _valid_url(url: str) -> bool:
     try:
         parsed = urlparse(url)
-        return parsed.scheme == "https" and bool(parsed.netloc)
+        parsed.port  # Validate syntax/range; ordinary hyperlinks may use custom HTTPS ports.
+        return parsed.scheme == "https" and bool(parsed.hostname) and not parsed.username and not parsed.password and not any(ord(c)<33 or ord(c)==127 for c in url)
     except Exception:
         return False
 
@@ -238,6 +252,7 @@ def _require_style(doc: dict):
         raise PublicationError('Choose one of the two creative directions before producing content')
 
 
+@serialized
 def import_image(slug: str, slot: str, data: bytes, source: str, credit: str, rights: str) -> dict:
     doc = load(slug)
     _require_style(doc)
@@ -247,7 +262,7 @@ def import_image(slug: str, slot: str, data: bytes, source: str, credit: str, ri
     if len(data) > 14_000_000:
         raise PublicationError("Image exceeds 14 MB")
     try:
-        with Image.open(BytesIO(data)) as read:
+        with Image.open(BytesIO(data), formats=('JPEG','PNG','WEBP')) as read:
             if read.width * read.height > 50_000_000:
                 raise PublicationError("Image has too many pixels")
             clean = ImageOps.exif_transpose(read).convert("RGB")
@@ -258,14 +273,20 @@ def import_image(slug: str, slot: str, data: bytes, source: str, credit: str, ri
     fname = "hero.jpg" if slot == "hero" else f"{slot}.jpg"
     dest = path_for(slug) / "assets" / fname
     dest.parent.mkdir(exist_ok=True)
-    tmp = dest.with_suffix(".tmp")
-    clean.save(tmp, format="JPEG", quality=89, optimize=True, subsampling=0)
-    tmp.replace(dest)
+    if dest.parent.resolve().parent != path_for(slug) or dest.is_symlink():
+        raise PublicationError("Invalid image destination")
+    tmp = temporary_path(dest)
+    try:
+        clean.save(tmp, format="JPEG", quality=89, optimize=True, subsampling=0)
+        tmp.replace(dest)
+    finally:
+        tmp.unlink(missing_ok=True)
     img_obj.update({"file": fname, "sha256":sha256(dest.read_bytes()).hexdigest(), "source": source.strip(), "credit": credit.strip(), "rights": rights, "evidence":"", "approved": False, "width": original_size[0], "height": original_size[1]})
     store(slug, doc)
     return img_obj
 
 
+@serialized
 def set_image_metadata(slug: str, slot: str, metadata: dict) -> dict:
     doc = load(slug)
     obj = doc["hero"] if slot == "hero" else next((e["image"] for e in doc["stories"] if e["id"] == slot), None)
@@ -289,6 +310,7 @@ def set_image_metadata(slug: str, slot: str, metadata: dict) -> dict:
     return obj
 
 
+@serialized
 def add_story(slug: str, title: str):
     doc = load(slug)
     _require_style(doc)
@@ -304,6 +326,7 @@ def add_story(slug: str, title: str):
     return entry
 
 
+@serialized
 def update_story(slug: str, sid: str, changes: dict):
     doc = load(slug)
     e = next((x for x in doc["stories"] if x["id"] == sid), None)
@@ -317,6 +340,7 @@ def update_story(slug: str, sid: str, changes: dict):
     return e
 
 
+@serialized
 def update_brief(slug: str, changes: dict):
     doc = load(slug)
     current = dict(doc.get('brief',{}))
@@ -330,6 +354,7 @@ def update_brief(slug: str, changes: dict):
     return doc
 
 
+@serialized
 def select_style(slug: str, style_id: str):
     if style_id not in DIRECTIONS:
         raise PublicationError('Unknown creative style direction')
@@ -341,6 +366,7 @@ def select_style(slug: str, style_id: str):
     return doc['style']
 
 
+@serialized
 def update_project(slug: str, changes: dict):
     doc = load(slug)
     for k in ("title", "kicker", "edition", "description"):
@@ -546,6 +572,7 @@ def onepager(c,doc,slug):
     footer(c,1,1,slug);c.showPage()
 
 
+@serialized
 def render_pdf(doc: dict, output: Path) -> dict:
     slug=doc["slug"]
     result=preflight(doc)
@@ -555,7 +582,7 @@ def render_pdf(doc: dict, output: Path) -> dict:
     theme_token = _ACTIVE_STYLE.set(style_id)
     distribution_token = _ACTIVE_DISTRIBUTION.set(doc.get('brief',{}).get('distribution','private'))
     output.parent.mkdir(parents=True,exist_ok=True)
-    tmp=output.with_suffix(".part")
+    tmp=temporary_path(output)
     try:
         c=canvas.Canvas(str(tmp),pagesize=A4,pageCompression=1)
         c.setTitle(f"{doc['title']} | Editorial Studio")
@@ -582,7 +609,7 @@ def render_pdf(doc: dict, output: Path) -> dict:
             raise PublicationError("PDF audit failed: " + "; ".join(audit["errors"]))
         tmp.replace(output)
         snapshot=output.with_suffix(".manifest.json")
-        snapshot.write_text(json.dumps(doc,ensure_ascii=False,indent=2),encoding="utf-8")
+        atomic_write(snapshot,json.dumps(doc,ensure_ascii=False,indent=2).encode("utf-8"))
         return {**audit,"file":str(output),"snapshot":str(snapshot)}
     finally:
         if tmp.exists():tmp.unlink()
@@ -612,9 +639,10 @@ def verify_pdf(path:Path,doc:dict) -> dict:
         return {"pass":False,"errors":[f"Invalid PDF: {ex}"],"pages":0,"photo_pages_verified":0,"links":0,"bytes":0}
 
 
+@serialized
 def export(slug: str):
     doc=load(slug)
-    stem=slugify(doc["title"]) + ("-onepager" if doc["kind"]=="onepager" else "-magazine")
+    stem=doc["slug"] + ("-onepager" if doc["kind"]=="onepager" else "-magazine")
     path=OUTPUTS/(stem+".pdf")
     from finalized_edition import inspect_edition, publish_edition
     if (path_for(slug)/'finalized-edition.json').exists():
