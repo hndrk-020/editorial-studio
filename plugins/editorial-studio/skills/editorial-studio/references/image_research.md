@@ -43,3 +43,31 @@ Never claim "royalty free" means "no conditions", never strip mandatory credit/l
 ## 6. Failure behavior
 
 If the exact legitimate photo cannot be sourced: present candidate sources and explain what's missing. Leave that slot unapproved; the final export remains locked. Do not fake a photographer, crop a watermarked image, or substitute a lookalike.
+
+## 7. Photographic storytelling and sequencing
+
+During visual research and art direction, use the editorial plan and approved brand sheet to define what each image contributes to the story. Select for narrative relevance as well as visual quality. Possible roles include an establishing scene, main subject or action, revealing detail, human moment and closing image; use only those appropriate to the subject and available space, rather than requiring five photographs for every feature.
+
+- Sequence images so the reader gains context, discovers something specific and reaches a deliberate ending. For a single-image feature or onepager, choose the most useful narrative role and assess its relationship to adjacent features.
+- Review candidates together as a contact sheet or sequence. Avoid redundant angles, near-duplicate hero shots and repeated compositions unless repetition serves the story. Vary distance, scale and mood where supported by the approved direction.
+- Preserve chronology and context where they matter. Do not imply that unrelated people, places or moments share an event or relationship. Captions should clarify relevant context with verified information.
+- Check the intended crop at placement size: preserve focal points, meaningful details and room for text where needed. Do not crop in a way that changes the factual meaning. Unsupported multi-image layouts remain an engineering task; a sequence can span existing feature slots without inventing renderer capabilities.
+
+Record narrative role, intended position and crop notes alongside the existing image provenance record or in the editorial plan. These are working notes, not new manifest fields. Narrative suitability does not replace source, rights, subject-match or human approval requirements. If a narrative gap remains, suggest a legitimate alternative or revise the sequence without bypassing the existing failure behavior.
+
+## 8. Optional original-photography brief
+
+When original photography is planned, prepare a concise brief from the approved editorial plan and brand sheet. This is a planning aid, not authorization to commission a photographer, contact subjects or arrange a shoot.
+
+```text
+Story angle and reader takeaway:
+Actual subject, location and relevant context:
+Needed shots and their narrative roles: [prioritize essential over optional]
+Mood, lighting and composition:
+Orientation, intended placement, crop and text-space needs:
+Delivery size/format suited to the output and existing asset gate:
+Access, permission and usage requirements to resolve:
+Photographer credit and caption information to collect:
+```
+
+Adapt the shot list to the subject; do not stage documentary moments and present them as spontaneous evidence. Supplied photographs still undergo the existing provenance, approval and release checks.

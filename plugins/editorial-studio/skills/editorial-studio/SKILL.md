@@ -40,6 +40,19 @@ For precise prompts, see `references/creative_brief.md` and `references/style_di
 
 These are **procedural roles**, not five always-on background agents. If a tool supports subagent delegation, tasks may be delegated, but approval gates remain.
 
+## Editorial planning, editing and brand continuity
+
+These additions support the existing production roles and approval gates; they do not replace them or introduce extra approval rounds.
+
+- **During briefing and creative strategy:** read `references/brand_system.md` when establishing or continuing a publication. Reuse its existing identity and record a compact brand sheet; develop the two required creative directions within those constraints.
+- **After creative-direction approval, before feature production:** read `references/editorial_planning.md` and create an editorial promise, story mix and page plan. Scale the plan to the format and current renderer limits.
+- **After drafting, before quality review:** apply the editing pass in `references/editorial_planning.md`, then inspect the laid-out copy for fit and reading order. Preserve research evidence, uncertainty and image credits throughout editing.
+- **During image selection and art direction:** use the photographic storytelling guidance in `references/image_research.md` to assign images distinct narrative roles and sequence them within the supported layout. Use its optional shoot brief when original photography is planned.
+- **During existing visual QC:** apply the whole-issue review in `references/qa_release.md` to assess pacing, image variety, section transitions and brand consistency across the complete publication.
+- **During design development:** use the representative proof-page guidance in `references/style_directions.md` to check the approved direction against actual content before applying it throughout the issue. Preserve the existing separate approved phase for high-end custom proof spreads and all current renderer limits.
+
+Keep the plan and brand sheet alongside the publication project as working documents. They are agent-authored planning aids, not new dashboard features or manifest fields; do not change application schemas or imply that the renderer implements unsupported designs.
+
 ## Local dashboard and commands
 
 Within the Editorial Studio project:
