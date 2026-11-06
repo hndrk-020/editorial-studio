@@ -6,7 +6,7 @@
 4. **Distribution rights:** reject `private_reference` assets in public editions; flag them as a warning for personal/internal review where appropriate. Do not equate this technical gate with legal review.
 5. **Preflight:** `python studio.py preflight SLUG` must return `pass: true`.
 6. **Export + structural audit:** `python studio.py export SLUG` generates an actual PDF, verifies its expected page count, photograph-bearing pages and hyperlink annotations, and saves a JSON snapshot.
-7. **Visual QC:** render each page to PNG using `fitz` or an approved PDF renderer. Inspect all pages at thumbnail scale and high-priority pages at full resolution. Fix clipped text, poor crops and illegible details. Print readiness/CMYK/bleed is not included in v0.3.
+7. **Visual QC:** render each page to PNG using `fitz` or an approved PDF renderer. Inspect all pages at thumbnail scale and high-priority pages at full resolution. Fix clipped text, poor crops and illegible details. Print readiness/CMYK/bleed is not included in the current renderer.
 8. **Offline check:** disconnect network and confirm PDF still shows images. Confirm the PDF opens in an Android/desktop reader.
 9. **Delivery:** provide a verified PDF link as the primary deliverable, indicate whether other editable assets are available, and be honest if a step could not be tested on the user's Windows device.
 

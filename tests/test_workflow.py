@@ -37,6 +37,27 @@ class WorkflowTests(unittest.TestCase):
         self.temp.cleanup()
     def new(self,brief=BRIEF,kind='onepager'):
         return engine.create_project('Future infrastructure',kind,'A design issue about the built world','Issue 01',brief)
+    def test_upload_rejects_other_decoder_formats(self):
+        doc=self.new();engine.select_style(doc['slug'],'field-notes')
+        payload=BytesIO();Image.new('RGB',(10,10),'white').save(payload,format='BMP')
+        with self.assertRaises(engine.PublicationError):
+            engine.import_image(doc['slug'],'hero',payload.getvalue(),'synthetic test','test','own')
+
+    def test_same_title_projects_export_to_distinct_paths(self):
+        from unittest.mock import patch
+        first=self.new();second=self.new()
+        with patch.object(engine,'render_pdf',side_effect=lambda doc,path:path) as render:
+            one=engine.export(first['slug']);two=engine.export(second['slug'])
+        self.assertNotEqual(one,two)
+        self.assertIn(second['slug'],two.name)
+
+    def test_changed_provenance_revokes_approval(self):
+        doc=self.new();engine.select_style(doc['slug'],'field-notes')
+        engine.import_image(doc['slug'],'hero',image_bytes(),'synthetic test','test','own')
+        engine.set_image_metadata(doc['slug'],'hero',{'approved':True})
+        engine.set_image_metadata(doc['slug'],'hero',{'credit':'Updated test credit'})
+        self.assertFalse(engine.load(doc['slug'])['hero']['approved'])
+
     def test_brief_then_two_distinct_directions(self):
         doc=self.new()
         ideas=propose_directions(doc['brief'])

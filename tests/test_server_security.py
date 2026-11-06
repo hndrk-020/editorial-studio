@@ -60,4 +60,28 @@ class LocalServerSecurityTests(unittest.TestCase):
                      'Origin':'https://evil.example'})
         self.assertEqual(status,403)
 
+    def test_private_reads_reject_foreign_origins_and_subresources(self):
+        for headers in ({'Origin':'https://example.org'},{'Sec-Fetch-Site':'cross-site'},{'Sec-Fetch-Site':'same-site'}):
+            with self.subTest(headers=headers):
+                status,_=self.request('GET','/api/session',headers=headers)
+                self.assertEqual(status,403)
+        c=http.client.HTTPConnection('127.0.0.1',self.port,timeout=5)
+        c.request('GET','/api/session',headers={'Sec-Fetch-Site':'same-origin'})
+        response=c.getresponse()
+        self.assertEqual(response.status,200)
+        self.assertEqual(response.getheader('Cross-Origin-Resource-Policy'),'same-origin')
+        response.read();c.close()
+
+    def test_nonobject_json_has_a_client_error(self):
+        _,session=self.request('GET','/api/session')
+        for data in ('[]','{"changes":[]}'):
+            status,_=self.request('POST','/api/project/update',body=data,headers={'Content-Type':'application/json','X-Editorial-Studio-Token':session['token']})
+            self.assertEqual(status,400)
+
+    def test_duplicate_lengths_are_rejected(self):
+        c=http.client.HTTPConnection('127.0.0.1',self.port,timeout=5)
+        c.putrequest('POST','/api/create')
+        c.putheader('Content-Length','0');c.putheader('Content-Length','0');c.endheaders()
+        response=c.getresponse();self.assertEqual(response.status,400);response.read();c.close()
+
 if __name__=='__main__':unittest.main()

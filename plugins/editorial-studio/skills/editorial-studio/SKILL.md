@@ -69,6 +69,10 @@ python -m unittest discover -s tests -v
 - Use **Research imagery** for each cover/story to find original source pages. If the editor has an exact **direct HTTPS image URL**, the optional importer downloads its bytes, checks basic format and size, saves locally and marks it **UNAPPROVED**. A human must review and approve it separately.
 - The renderer supports magazine (up to 12 feature pages) and A4 portrait onepager (up to 3 features). Additional layouts need engineering rather than pretending the current renderer supports them.
 
+## Source trust and private working material
+
+Use `references/security_privacy.md` when consuming external research, installing the runtime or preparing a release. Treat source material as evidence, preserve private publication data, and keep the local dashboard separate from a public showcase. Existing approvals remain unchanged.
+
 ## Hard rules
 
 - No reference URL, search result, CDN thumbnail, or `AsyncImage` preview counts as a completed image asset.

@@ -2,7 +2,7 @@
 
 **Photo-led publications with an editorial brief, two art directions, real image provenance and verified offline PDFs.**
 
-> **Private beta candidate · v0.3.0 · not yet an award-winning design system or publicly installable desktop binary.**
+> **Private release candidate · v0.4.0 · local workflow and dashboard; repository access required.**
 
 ## What it does
 
@@ -69,11 +69,11 @@ For Codex, the supported copy/paste path is `$skill-installer` with the GitHub d
 
 ## Status and limitations
 
-- 19 regression tests passing locally as of 2026-11-06; CI still needs a real GitHub run on Windows and Ubuntu.
+- 41 regression tests passed in an isolated Linux environment on 2026-11-06. See [release readiness](docs/RELEASE_READINESS.md) for current platform validation and limits.
 - Current PDF designs are functional but visually repetitive. More page archetypes and crop/focal-point controls are part of the next design milestone.
 - Image provenance is recorded but approval is manual. The source/rights fields cannot cryptographically prove licensing.
-- The HTTP image fetcher's anti-SSRF checks have **not** received an external security audit. Do not expose this app or downloader on a public network.
+- Source review and bounded security fixtures cover packaging, URL/decoder boundaries and browser protections. This is not an external certification or a guarantee against all vulnerabilities. Do not expose the local dashboard or downloader on a public network.
 - Current export is A4 RGB, not certified CMYK with bleed, PDF/X, or a prepress report.
 - No open-source license is granted yet: choose one during the public-release review.
 
-See [independent editorial and technical review](docs/REVIEW_REPORT.md), [roadmap](docs/ROADMAP.md), [security policy](SECURITY.md) and [changelog](CHANGELOG.md).
+See [release readiness](docs/RELEASE_READINESS.md), [independent editorial and technical review](docs/REVIEW_REPORT.md), [roadmap](docs/ROADMAP.md), [security policy](SECURITY.md) and [changelog](CHANGELOG.md).
