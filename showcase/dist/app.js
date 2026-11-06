@@ -12,3 +12,19 @@ const installTabs=[...document.querySelectorAll('[data-install]')];
 function selectInstall(tab,focus=false){installTabs.forEach(t=>{const selected=t===tab;t.setAttribute('aria-selected',String(selected));t.tabIndex=selected?0:-1;document.getElementById('install-'+t.dataset.install).hidden=!selected});if(focus)tab.focus()}
 installTabs.forEach((tab,i)=>{tab.addEventListener('click',()=>selectInstall(tab));tab.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();selectInstall(installTabs[e.key==='Home'?0:e.key==='End'?1:1-i],true)}})});
 let toastTimer;document.querySelectorAll('[data-copy]').forEach(button=>button.addEventListener('click',async()=>{const value=document.getElementById(button.dataset.copy).textContent;const toast=document.getElementById('toast');try{await navigator.clipboard.writeText(value);toast.textContent='Copied. Paste it into '+(button.dataset.copy.includes('command')&&!button.dataset.copy.includes('install')?'your terminal.':'Codex.')}catch{toast.textContent='Copy unavailable. Select and copy the text above.';const range=document.createRange();range.selectNodeContents(document.getElementById(button.dataset.copy));const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range)}toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),4500)}));
+
+// Native controls remain available if JavaScript cannot initialize.
+const heroVideo=document.getElementById('hero-video');
+const heroToggle=document.getElementById('hero-toggle');
+const heroFallback=document.getElementById('hero-fallback');
+if(heroVideo&&heroToggle&&heroFallback){
+ const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+ heroVideo.muted=true;heroVideo.controls=false;heroToggle.hidden=false;
+ function updateFilmButton(){heroToggle.textContent=heroVideo.paused?'Play film':'Pause film';heroToggle.setAttribute('aria-label',heroVideo.paused?'Play hero film':'Pause hero film')}
+ function respectMotion(){if(reducedMotion.matches){heroVideo.autoplay=false;heroVideo.pause();heroVideo.currentTime=0}else{heroVideo.autoplay=true;heroVideo.play().catch(updateFilmButton)}updateFilmButton()}
+ heroToggle.addEventListener('click',()=>{if(heroVideo.paused)heroVideo.play().catch(updateFilmButton);else heroVideo.pause()});
+ heroVideo.addEventListener('play',updateFilmButton);heroVideo.addEventListener('pause',updateFilmButton);
+ function showFilmFallback(){heroVideo.hidden=true;heroFallback.hidden=false;heroToggle.hidden=true}
+ heroVideo.addEventListener('error',showFilmFallback);heroVideo.querySelector('source').addEventListener('error',showFilmFallback);
+ reducedMotion.addEventListener('change',respectMotion);respectMotion();
+}

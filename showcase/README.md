@@ -8,6 +8,9 @@ Live at https://magazine.10myth.com. This directory contains the source of the p
 - `dist/style.css`: responsive editorial design, animation and reduced-motion support.
 - `dist/app.js`: accessible workflow/installation tabs and copy buttons.
 - `dist/mark.svg`: original typographic mark.
+- `dist/hero.mp4` and `dist/hero-poster.jpg`: original silent 16-second film and poster fallback; no personal photographs.
+
+The film autoplays muted and loops inline. Its play/pause control remains available; reduced-motion preferences disable autoplay. A failed media load displays the poster image. Native video controls remain if JavaScript is unavailable.
 - `.openai/hosting.json`: existing Site identity and static deployment directory. This is deployment configuration, not a publication manifest or a credential.
 
 The cover illustration is an original typographic concept, explicitly labelled as such. No personal publications, photos, exported PDFs, user project manifests, credentials or dependency directories belong here.
