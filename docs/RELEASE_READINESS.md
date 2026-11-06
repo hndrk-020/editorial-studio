@@ -27,4 +27,8 @@ Discovery, two-direction selection, exact-photo human approval, authentic subjec
 
 ## Public showcase boundary
 
-The proposed magazine.10myth.com site is a workflow showcase and installation guide. It will not accept uploads, process PDFs, expose the localhost app or contain personal guides/photos. Installation will continue to require access to the private repository. Building/publishing that site and configuring the domain require the user's approval. Public software distribution still requires the separate checks in SECURITY.md, including an external review and signed release checksums.
+The approved https://magazine.10myth.com site is live as a public workflow showcase and installation guide. It does not accept uploads, process PDFs, expose the localhost app or contain personal guides/photos. Installation requires access to the private repository. The custom hostname and HTTPS certificate were verified active. Public software distribution still requires the separate checks in SECURITY.md, including an external review and signed release checksums.
+
+## Final private release verification
+
+Windows/Ubuntu CI passed on Python 3.11 and 3.13 for the reviewed release and showcase-source commit. A native Windows Python 3.12 run completed 41 tests with 40 passed and one symlink-privilege skip. The local dashboard loaded the existing project and approvals. These checks do not constitute public multiuser-service certification. See GitHub Actions for checks on the exact final release commit.

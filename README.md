@@ -4,7 +4,7 @@
 
 Visit [magazine.10myth.com](https://magazine.10myth.com) for the public showcase and step-by-step installation guide. Repository access is required to install the skill. The website source is in [showcase/](showcase/README.md).
 
-> **Private release candidate · v0.4.0 · local workflow and dashboard; repository access required.**
+> **Private release · v0.4.0 · local workflow and dashboard; repository access required.**
 
 ## What it does
 

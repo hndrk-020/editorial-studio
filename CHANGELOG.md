@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.0 - Hardened private release candidate (2026-11-06)
+## 0.4.0 - Hardened private release (2026-11-06)
 
 - Explicit release inventory excludes untracked private configuration, photographs and manifests.
 - Hash-locked runtime with patched Pillow; pinned CI actions and dependency scanning.
