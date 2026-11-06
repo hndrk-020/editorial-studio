@@ -221,7 +221,16 @@ def preflight(doc: dict) -> dict:
                 errors.append(f"{e.get('title', 'Story')}: invalid {k} link")
         if not e.get("website"):
             warnings.append(f"{e.get('title', 'Story')}: original source link missing")
-    return {"pass": not errors, "errors": errors, "warnings": warnings, "ready_photos": len(successes), "total_photos": len(list(photo_slots(doc))), "messages": successes}
+    total_photos=len(list(photo_slots(doc)))
+    try:
+        from finalized_edition import inspect_edition
+        custom=inspect_edition(path_for(slug),doc)
+        if custom:
+            total_photos=len(custom['assets'])
+            if not errors:successes=[a['id'] for a in custom['assets']]
+    except (ValueError,KeyError,OSError) as ex:
+        errors.append('Custom edition: '+str(ex))
+    return {"pass": not errors, "errors": errors, "warnings": warnings, "ready_photos": len(successes), "total_photos": total_photos, "messages": successes}
 
 
 def _require_style(doc: dict):
@@ -607,6 +616,12 @@ def export(slug: str):
     doc=load(slug)
     stem=slugify(doc["title"]) + ("-onepager" if doc["kind"]=="onepager" else "-magazine")
     path=OUTPUTS/(stem+".pdf")
+    from finalized_edition import inspect_edition, publish_edition
+    if (path_for(slug)/'finalized-edition.json').exists():
+        check=preflight(doc)
+        if not check['pass']:raise PublicationError('Preflight failed: '+' | '.join(check['errors']))
+        try:return publish_edition(inspect_edition(path_for(slug),doc),doc,path)
+        except (ValueError,KeyError,OSError) as ex:raise PublicationError(str(ex)) from ex
     return render_pdf(doc,path)
 
 
