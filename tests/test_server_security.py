@@ -29,6 +29,19 @@ class LocalServerSecurityTests(unittest.TestCase):
         response=c.getresponse();status=response.status
         content=response.read();c.close()
         return status,json.loads(content)
+    def test_rejected_post_body_is_consumed_before_response(self):
+        from io import BytesIO
+        from unittest.mock import patch
+        handler=object.__new__(Handler)
+        handler.headers={'Content-Length':'7','Host':'evil.example'}
+        handler.rfile=BytesIO(b'{"x":1}')
+        handler.connection=__import__('unittest.mock',fromlist=['Mock']).Mock()
+        handler.server=self.server
+        with patch.object(handler,'_response') as response:
+            handler.do_POST()
+        self.assertEqual(handler.rfile.tell(),7)
+        self.assertEqual(response.call_args.args[0],403)
+
     def test_untrusted_host_cannot_get_session_token(self):
         status,_=self.request('GET','/api/session',headers={'Host':'evil.example'})
         self.assertEqual(status,403)

@@ -93,6 +93,22 @@ class Handler(BaseHTTPRequestHandler):
             self._response(500,{"error":"Unexpected server error; check the terminal"})
 
     def do_POST(self):
+        # Consume bounded request bytes before rejecting headers. Closing a socket
+        # with unread POST data can reset the connection on Windows, hiding the
+        # intended JSON error response from the client.
+        try:
+            n=int(self.headers.get("Content-Length", "0"))
+        except ValueError:
+            return self._response(400,{"error":"Invalid Content-Length"})
+        if n<=0 or n>MAX_BODY:
+            return self._response(413,{"error":"Invalid request size (20 MB max)"})
+        self.connection.settimeout(5)
+        try:
+            body=self.rfile.read(n)
+        except TimeoutError:
+            return self._response(408,{"error":"Request body timed out"})
+        if len(body)!=n:
+            return self._response(400,{"error":"Incomplete request body"})
         if not self._trusted_local_host() or self._reject_cross_origin():
             return self._response(403,{"error":"Untrusted request origin"})
         if self.headers.get('Content-Type','').split(';')[0].strip().lower()!='application/json':
@@ -100,9 +116,7 @@ class Handler(BaseHTTPRequestHandler):
         if not secrets.compare_digest(self.headers.get('X-Editorial-Studio-Token',''),SESSION_TOKEN):
             return self._response(403,{"error":"Missing or invalid studio session token"})
         try:
-            n=int(self.headers.get("Content-Length", "0"))
-            if n<=0 or n>MAX_BODY:return self._response(413,{"error":"Invalid request size (20 MB max)"})
-            data=json.loads(self.rfile.read(n).decode("utf-8"))
+            data=json.loads(body.decode("utf-8"))
             p=urlsplit(self.path).path
             if p=="/api/create":
                 project=create_project(str(data.get("title","")),str(data.get("kind","magazine")),str(data.get("description","")),str(data.get("edition","")),data.get('brief',{}))
