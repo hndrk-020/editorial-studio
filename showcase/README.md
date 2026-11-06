@@ -32,3 +32,5 @@ Run `node --check dist/app.js`. Inspect desktop and mobile layouts; test tab sel
 The live Site uses its separately managed Sites source repository. A commit to this GitHub repository does **not** deploy the website. To publish changes, use the Sites skill with the existing `project_id` in `.openai/hosting.json`, obtain fresh repository access through the Sites tool, and synchronize only this directory's website source into that Site checkout. Preserve its identity; do not create a replacement Site. Follow the Sites source-helper, save-version and deployment workflow, then verify https://magazine.10myth.com over HTTPS.
 
 Never store source-repository tokens in this directory. The main skill release ZIP intentionally excludes the showcase: `release-files.json` remains the explicit skill/application distribution inventory.
+
+The opening hero uses a split layout on desktop and places the full film immediately after the headline on mobile. Check the complete video and pause control at scroll position zero on small and large viewports.
