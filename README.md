@@ -12,6 +12,8 @@ Currently implemented: a local dashboard, two fixed visual themes, a human-super
 
 ## Quick start
 
+For a complete Windows walkthrough, see the [local skill installation guide](docs/LOCAL_INSTALLATION.md), including verification, updates, private-repository access and optional dashboard setup.
+
 **Windows:** Install Python 3.11+ from https://python.org/downloads/ and enable Python on PATH. Download the repository or ZIP, extract it, then double-click `run_windows.cmd`. First start requires internet for dependencies. The local studio opens at `http://127.0.0.1:8765`.
 
 **macOS/Linux:** `chmod +x run_mac_linux.sh && ./run_mac_linux.sh` (Python 3.11+ required).
