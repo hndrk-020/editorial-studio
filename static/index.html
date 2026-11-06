@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f2ea">
+  <title>Editorial Studio — Stories worth keeping</title>
+  <link rel="stylesheet" href="/static/studio.css">
+  <script defer src="/static/studio.js"></script>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-sign">e<span>.</span></div><div><div class="brand-name">editorial<span>studio</span></div><div class="brand-sub">MADE FOR STORIES</div></div></div>
+    <div class="side-section">YOUR WORKSPACE</div>
+    <nav id="nav" aria-label="Studio sections">
+      <button class="nav-button active" data-view="overview"><span class="nav-symbol">◫</span> Overview</button>
+      <button class="nav-button" data-view="directions"><span class="nav-symbol">◈</span> Creative direction</button>
+      <button class="nav-button" data-view="stories"><span class="nav-symbol">▤</span> Stories & imagery <span id="countNav" class="nav-count">0</span></button>
+      <button class="nav-button" data-view="quality"><span class="nav-symbol">✓</span> Quality gate</button>
+      <button class="nav-button" data-view="publish"><span class="nav-symbol">↗</span> Publish PDF</button>
+    </nav>
+    <div class="side-projects"><div class="side-section">PUBLICATIONS</div><div id="projectsList"></div></div>
+    <div class="side-bottom"><span class="pulse"></span> ON THIS DEVICE <small>no cloud account required</small></div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar">
+      <div class="breadcrumbs">STUDIO <span>/</span> <strong id="crumb">OVERVIEW</strong></div>
+      <div class="top-right"><span class="top-version">EDITORIAL SYSTEM 0.2</span><button class="button button-dark" data-action="new-project">+ New publication</button></div>
+    </header>
+    <main class="content" id="content"><div class="loading">Opening your studio…</div></main>
+    <footer class="app-foot">EDITORIAL STUDIO <span>CURATE WITH CARE · PUBLISH WITH CONFIDENCE</span> <span>LOCAL FIRST / © YOUR WORK</span></footer>
+  </div>
+</div>
+<div id="modalMount"></div><div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "editorial-studio",
+  "version": "0.3.0",
+  "description": "Create image-led magazines and onepagers with two art directions, source-controlled photography and publication quality gates."
+}

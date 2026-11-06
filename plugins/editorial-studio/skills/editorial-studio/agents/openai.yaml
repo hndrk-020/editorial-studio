@@ -1,0 +1,4 @@
+interface:
+  display_name: "Editorial Studio"
+  short_description: "Art direction, image research and verified PDFs"
+  default_prompt: "Use $editorial-studio to create a photo-led publication. First ask for its purpose, desired style and an inspiration URL, then present two distinct visual directions before production."

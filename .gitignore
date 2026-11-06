@@ -1,0 +1,17 @@
+# Editorial Studio - user content is local, not repository source.
+/projects/
+/output/
+/dist/
+/.venv/
+/.env
+/.env.*
+!.env.example
+/__pycache__/
+**/__pycache__/
+*.py[cod]
+*.log
+.DS_Store
+Thumbs.db
+*.egg-info/
+.pytest_cache/
+.coverage
