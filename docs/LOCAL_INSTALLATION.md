@@ -1,88 +1,127 @@
-# Install Editorial Studio locally on Windows
+# From installation to your first PDF
 
-Use this guide with the public [hndrk-020/editorial-studio repository](https://github.com/hndrk-020/editorial-studio). No repository invitation is required. Choose one installation route.
+Editorial Studio has two parts. **The skill teaches your AI tool the editorial workflow. The local application provides this project's dashboard and PDF renderer.** Installing the skill alone does not install Python or the application.
 
+You need your own access to a supported AI tool; its subscriptions and usage limits are separate. The source is publicly readable at [hndrk-020/editorial-studio](https://github.com/hndrk-020/editorial-studio). No repository invitation, GitHub token or administrator access is required to copy the skill.
 
-1. Open Codex and sign in.
-   The public GitHub source download does not require signing in.
+## 1. Install the skill and verify discovery
 
-2. Download the source.
-   Open https://github.com/hndrk-020/editorial-studio
-   Select Code > Download ZIP. This downloads the current branch source; avoid an older release ZIP if you want the enhanced workflow.
-   If the link returns 404, check the repository URL and branch before retrying.
+Choose **one** of these routes. Keep an existing working installation until you have deliberately chosen to update it.
 
-3. Extract the ZIP completely.
-   Right-click the downloaded ZIP > Extract All.
-   Open the extracted editorial-studio-main folder. Confirm install_codex_skill_windows.cmd and .agents\skills\editorial-studio\SKILL.md exist.
-   Do not run the installer from inside the ZIP preview.
+### Inside Codex
 
-4. Run the skill installer.
-   Double-click install_codex_skill_windows.cmd.
-   This copies the complete skill and reference files to:
-   %USERPROFILE%\.agents\skills\editorial-studio
-   Administrator access, Python, Git and Node are not needed for this copy operation.
-   If the destination already has SKILL.md, the installer asks whether to replace it. Back up any local edits before choosing Y.
-   Wait for the “Skill installed in” message, then press a key to close the window.
-   The script uses xcopy to overlay files; it does not remove obsolete destination files.
+Paste this into Codex:
 
-5. Verify the files in PowerShell.
-   Run:
-   Test-Path "$env:USERPROFILE\.agents\skills\editorial-studio\SKILL.md"
-   Test-Path "$env:USERPROFILE\.agents\skills\editorial-studio\references\editorial_planning.md"
-   Test-Path "$env:USERPROFILE\.agents\skills\editorial-studio\references\brand_system.md"
-   All three should return True. These checks verify copied files, not Codex discovery.
-
-6. Refresh Codex and test discovery.
-   Start a new turn; restart Codex if the skill is not listed. Type $editorial-studio and select it if the skill picker appears.
-   Send:
-   $editorial-studio Confirm you can load the skill and its editorial planning and brand system references. Tell me the loaded SKILL.md path. Do not start a publication yet.
-   Confirm the reported path is the installation you intended. This verifies loading rather than a file copy alone.
-
-7. Start your first publication.
-   Example:
-   $editorial-studio Create a Dutch photography-led personal travel guide. Start with the purpose, audience and style, ask for an inspiration URL or no example, then show two creative directions before production.
-   Expect the existing direction and exact-image approval gates, followed by editorial planning, design proofs and PDF quality checks.
-
-## Alternative: install from inside Codex
-Choose this route instead of the Windows installer, not in addition to it.
-Paste into Codex:
+```text
 $skill-installer install https://github.com/hndrk-020/editorial-studio/tree/main/.agents/skills/editorial-studio
-The bundled installer normally targets $CODEX_HOME/skills, defaulting to ~/.codex/skills. The standard public download requires no private-repository token. If you use a private fork, authenticate local Git or use a supported GitHub token; browser login alone may not authenticate Git.
-If it reports an existing destination, retain the current working installation or back it up before a deliberate update. The bundled installer refuses to overwrite an existing skill directory.
-It should be available on the next turn; restart Codex if discovery has not refreshed.
+```
+
+The bundled installer normally targets `$CODEX_HOME/skills`, defaulting to `~/.codex/skills`. It refuses to overwrite an existing destination. If it reports one, retain that copy or back it up outside active skill directories before a deliberate update. For a private fork, authenticate local Git or use a supported GitHub token; browser login alone may not authenticate Git.
+
+Start a new turn; restart Codex if discovery has not refreshed. Invoke `$editorial-studio` and send:
+
+```text
+$editorial-studio Confirm you can load the skill and its editorial planning and brand system references. Tell me the loaded SKILL.md path. Do not start a publication yet.
+```
+
+Confirm the reported path is the installation you intended. A successful file copy is not proof that the AI tool loaded that copy.
+
+### Windows source installer
+
+1. Open the [repository](https://github.com/hndrk-020/editorial-studio), select **Code → Download ZIP**, then use **Extract All**. This downloads the current branch; an older release ZIP may lack recent fixes. A 404 means you should check the URL and branch.
+2. Open the extracted `editorial-studio-main` folder. Confirm `install_codex_skill_windows.cmd` and `.agents/skills/editorial-studio/SKILL.md` exist. Do not run from inside a ZIP preview.
+3. Double-click `install_codex_skill_windows.cmd`. It copies the nine skill files to `%USERPROFILE%\.agents\skills\editorial-studio`. Python, Git and Node are not needed for this operation.
+4. If **any destination folder already exists**, the installer asks before updating. Back up local edits before selecting Y. An update overlays matching files and retains extra files; it is not an atomic replacement. An incomplete source is rejected before copying.
+5. Wait for **Skill installed in** and press a key. Then use the Codex discovery prompt above.
+
+For a check that changes no files, open PowerShell in the extracted folder:
+
+```powershell
+.\install_codex_skill_windows.cmd --check
+```
+
+This compares the nine distributed files with the source, including every reference. It returns a nonzero exit code for missing or changed files; intentional local edits can cause this result. It does not remove extra files or verify Codex discovery.
+
+### Other AI tools
+
+The [showcase](https://magazine.10myth.com) includes setup prompts for Claude Code, Grok **Build**, Cursor and Gemini CLI. Their documented skill locations differ. These are not instructions for consumer Grok chat. Keep all references with `SKILL.md`, use that tool's skill refresh/discovery command, and request the exact loaded path. These routes have not been runtime-tested here.
+
+## 2. Set up the local PDF application
+
+Complete this step for this project's dashboard or renderer. It is separate from skill installation.
+
+1. Keep the **full extracted repository** in a stable folder you control. A skill-only directory cannot run the dashboard. Existing users should keep their current checkout, `projects/`, `output/` and local settings; do not replace that whole folder with a fresh ZIP.
+2. Install [Python 3.11 or newer](https://www.python.org/downloads/). On Windows, enable its launcher/PATH option. Close and reopen the terminal after installation.
+3. Start the platform launcher from the repository.
+
+   Windows: double-click `run_windows.cmd`.
+
+   macOS/Linux:
+
+   ```bash
+   chmod +x run_mac_linux.sh
+   ./run_mac_linux.sh
+   ```
+
+   The launcher checks the Python version, creates `.venv` if absent, installs the hash-locked dependencies, checks the application files, and starts the dashboard. Initial dependency installation needs internet. Normal starts let pip check those locked dependencies again. It does not install or replace your AI tool.
+4. Open **http://127.0.0.1:8765** if the browser does not open automatically. Keep the terminal running. **Ctrl+C** stops the server. Keep this single-user app on localhost; do not expose it through a public tunnel.
+5. For future readiness checks, run one of these from the repository. `--check` does **not** install dependencies, create a virtual environment or start a server:
+
+   ```powershell
+   .\run_windows.cmd --check
+   ```
+
+   ```bash
+   ./run_mac_linux.sh --check
+   ```
+
+The diagnostic reports the Python executable/version, application files, linked skill references and installed dependency versions. A `FIX` result identifies missing prerequisites. Checks do not prove a finished PDF or AI-tool discovery.
+
+To check a specific installed skill with an available Python, without requiring the PDF runtime:
+
+```powershell
+.\.venv\Scripts\python.exe -B scripts\check_installation.py --skill "$env:USERPROFILE\.agents\skills\editorial-studio" --skill-only
+```
+
+Replace the path with the one your AI tool actually loaded. The diagnostic never reads your publications or settings.
+
+## 3. Make your first publication
+
+Open the full repository as your AI tool's workspace so the app is available. A useful starting request is:
+
+```text
+$editorial-studio Create an English two-page introduction for my startup, for prospective customers. Use my real product photographs. Start with the purpose, audience and style; ask for an inspiration URL or no example, then show two creative directions. Verify the local PDF application before production.
+```
+
+This starts discovery; it does not guarantee a particular layout from the baseline renderer. Its magazine supports up to 12 feature pages, and its A4 portrait onepager supports up to 3 features. Custom layouts need a separate approved development phase.
+
+Choose a direction, review the exact local images and crops, and retain source/rights evidence for the intended distribution. Downloaded images start unapproved. No final PDF is ready until preflight, PDF structure checks and visual review pass. The app runs locally; material you give an AI tool is handled under that provider's settings and terms.
 
 ## Existing installations and updates
 
-The repository Windows installer targets `~/.agents/skills`. The bundled Codex Skill Installer defaults to `$CODEX_HOME/skills` (normally `~/.codex/skills`). Keep one intended user-wide copy. Check both locations and ask Codex which `SKILL.md` it loads; a project-local `.agents/skills` copy can also exist.
+The Windows installer uses `~/.agents/skills`; the bundled Codex installer normally uses `~/.codex/skills`. A project-local `.agents/skills` copy can also take precedence. Check these locations and ask Codex which `SKILL.md` it loads. Keep one intended user-wide copy; do not delete working copies to fix an unexplained picker issue.
 
-Back up the entire existing folder outside active skill directories before an update. Preserve local edits and install the whole skill folder, including references. The Windows installer overlays files rather than removing obsolete ones; the bundled installer refuses an existing destination. Do not delete working copies to fix an unexplained picker issue.
+Back up the entire existing skill outside active skill directories before updating. Preserve local edits and update the whole skill, including references. The Windows installer overlays files and keeps obsolete extras; the bundled installer refuses an existing destination.
 
-## Optional local dashboard and PDF application
-Installing the skill provides instructions and references. The dashboard and its Python dependencies are separate.
-If you also want the repository application:
-- Keep the full extracted repository.
-- Install Python 3.11+ with its launcher/PATH option.
-- Double-click run_windows.cmd in the extracted repository.
-- The launcher creates .venv, installs requirements.txt and starts the localhost application; first start needs internet.
-- Open http://127.0.0.1:8765 if the browser does not open automatically. Keep its terminal running; Ctrl+C stops it.
-- Skill-only installation does not guarantee that an arbitrary project already has a PDF runtime or the application files.
+Application updates and skill updates are separate. Preserve `projects/`, `output/`, approved assets and local settings. If an existing `.venv` is broken or uses old Python, stop the dashboard, move **only `.venv`** to a backup directory, then run the launcher with a supported Python. Do not move/delete publication folders. Rebuilding an environment needs internet for dependencies.
 
 ## Troubleshooting
-- Missing SKILL.md: extract the full source ZIP; do not copy only the .cmd file.
-- Skill absent: check the actual destination, refresh Codex, then request the loaded path. Check for competing project/user copies.
-- Private clone authentication error: authenticate local Git separately, or use the browser ZIP route.
-- Dashboard exits: read the terminal error; check Python and dependency installation.
-- Preserve private publication data. Keep projects/ and output/ excluded from Git. Installation does not require uploading personal guides or photos.
+
+| What you see | What to do |
+|---|---|
+| Missing skill/reference file | Extract the complete source ZIP. Do not copy just the installer or `SKILL.md`. |
+| Skill absent or wrong loaded path | Refresh the AI tool, request the loaded path, and check for competing project/user copies. |
+| `studio.py` missing | You have the skill only, or are in the wrong directory. Use the full repository for the PDF app. |
+| Python opens Microsoft Store, or `py` is missing | Install Python 3.11+ from python.org with PATH/launcher enabled, then reopen the terminal. |
+| Dependency missing/version differs | Run the platform launcher normally to install into its `.venv`; use that environment's Python. Do not change an unrelated project's environment. |
+| Locked wheel unavailable | Read pip's error. Use a Python/platform with compatible wheels; retain hashes and avoid unreviewed source builds. CI covers Python 3.11/3.13 on Windows/Linux; macOS is not runtime-verified here. |
+| Port 8765 in use | Close the previous server, or use `.venv`'s Python with `studio.py serve --port 8766`. |
+| Export blocked | Resolve preflight's missing content, exact-image approval or rights evidence. Do not bypass those gates. |
+
+Keep personal content outside source control: `projects/` and `output/` are Git-ignored. Installation never requires uploading personal guides/photos, and does not publish them or change repository visibility.
 
 ## Verification scope
 
-Repository metadata and installer behavior were inspected on 6 November 2026. These instructions are not evidence of a clean-machine installation test. Installing a skill does not change repository visibility or publish local projects.
+The Windows source installer has been exercised in an isolated profile path containing spaces, and a fresh Codex process loaded the project-local skill and its references. This uses an existing machine and AI-tool login. It is **not** a clean-OS or unassisted first-time-user test. The public GitHub ZIP download/extraction route and the other four AI runtimes remain separately unverified in this local test. Do not infer all-platform compatibility from file checks.
 
-## Sources
-Verified repository installer:
-https://github.com/hndrk-020/editorial-studio/blob/main/install_codex_skill_windows.cmd
-Repository README:
-https://github.com/hndrk-020/editorial-studio/blob/main/README.md
-Official skill documentation:
-https://learn.chatgpt.com/docs/build-skills
-Bundled Skill Installer instructions were also checked locally.
+Source: [Windows installer](https://github.com/hndrk-020/editorial-studio/blob/main/install_codex_skill_windows.cmd), [repository README](https://github.com/hndrk-020/editorial-studio/blob/main/README.md), and the bundled Codex Skill Installer behavior. Current Codex discovery is documented in [OpenAI skills](https://developers.openai.com/plugins/concepts/skills).

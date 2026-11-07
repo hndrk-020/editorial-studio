@@ -119,7 +119,7 @@ def create_project(title: str, kind="magazine", description="", edition="", brie
 
 
 def photo_slots(doc: dict):
-    yield "hero", "Cover photograph", doc.get("hero", {})
+    yield "hero", "Cover image", doc.get("hero", {})
     for e in doc.get("stories", []):
         yield e["id"], e.get("title", "Story"), e.get("image", {})
 
@@ -525,7 +525,7 @@ def itinerary_page(c,doc,slug,number,total):
     notes=[("01", "Check the source", "Every story is editorial, not a substitute for up-to-date information from the original source."),
            ("02", "Read the image credits", "The photo credits page records origin, photographer or organization and usage basis."),
            ("03", "Follow the references", "Where available, story cards link to official sources and relevant details."),
-           ("04", "Keep the PDF", "Photographs are embedded locally and the publication opens offline."),
+           ("04", "Keep the PDF", "Images are embedded locally and the publication opens offline."),
            ("05", "Respect image rights", "Personal-reference images are not cleared for public distribution without permission.")]
     for num,title,desc in notes:
         spaced(c,num,45,y,size=9)
@@ -539,8 +539,8 @@ def itinerary_page(c,doc,slug,number,total):
 def credits_page(c,doc,slug,number,total,items,part,parts):
     fill_rect(c,0,0,W,H,COLORS["paper"])
     spaced(c,"IMAGE PROVENANCE",46,H-69)
-    large_title(c,"Photographs & sources",46,H-126,W-92,size=38)
-    block(c,f"Page {part} of {parts}. Photo credits are part of the publication, not optional. Verify usage rights for the intended audience.",46,H-180,W-92,size=10,leading=16,max_lines=4)
+    large_title(c,"Images & sources",46,H-126,W-92,size=38)
+    block(c,f"Page {part} of {parts}. Image credits are part of the publication, not optional. Verify usage rights for the intended audience.",46,H-180,W-92,size=10,leading=16,max_lines=4)
     y=H-262
     for slot,label,obj in items:
         c.setFont("Helvetica-Bold",9);c.setFillColor(HexColor(COLORS["ink"]));c.drawString(46,y,label[:62])

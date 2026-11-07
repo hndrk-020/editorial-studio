@@ -14,11 +14,21 @@ Currently implemented: a local dashboard, two fixed visual themes, a human-super
 
 ## Quick start
 
-For a complete Windows walkthrough, see the [local skill installation guide](docs/LOCAL_INSTALLATION.md), including verification, updates and the separate dashboard setup required for this project's PDF renderer.
+**Two setup steps: install the skill in your AI tool, then set up the local PDF app if you want this project's renderer.** Follow the [installation-to-first-PDF guide](docs/LOCAL_INSTALLATION.md), including safe updates and verification.
 
-**Windows:** Install Python 3.11+ from https://python.org/downloads/ and enable Python on PATH. Download the repository or ZIP, extract it, then double-click `run_windows.cmd`. First start requires internet for dependencies. The local studio opens at `http://127.0.0.1:8765`.
+**Codex, skill only:**
 
-**macOS/Linux:** `chmod +x run_mac_linux.sh && ./run_mac_linux.sh` (Python 3.11+ required).
+```text
+$skill-installer install https://github.com/hndrk-020/editorial-studio/tree/main/.agents/skills/editorial-studio
+```
+
+Start a new turn and ask `$editorial-studio` to report its loaded `SKILL.md` path and confirm it can read the editorial planning and brand references. An existing destination is preserved by the bundled installer; follow the guide for a deliberate update.
+
+**Local PDF app, Windows:** Install Python 3.11+ from https://python.org/downloads/ and enable Python on PATH. Keep the complete extracted repository, then double-click `run_windows.cmd`. First start requires internet for hash-locked dependencies. The local studio opens at `http://127.0.0.1:8765`.
+
+**Local PDF app, macOS/Linux:** `chmod +x run_mac_linux.sh && ./run_mac_linux.sh` (Python 3.11+ required; macOS has not been runtime-tested here).
+
+**Read-only setup check:** run `run_windows.cmd --check` or `./run_mac_linux.sh --check` from the repository. This diagnoses skill references, app files, Python and dependencies without downloads, changing publications, creating an environment or starting the dashboard.
 
 **Codex skill:** Open this repository in Codex; it auto-discovers `.agents/skills/editorial-studio/SKILL.md`. Ask:
 
@@ -82,6 +92,6 @@ For Codex, the supported copy/paste path is `$skill-installer` with the existing
 - Image provenance is recorded but approval is manual. The source/rights fields cannot cryptographically prove licensing.
 - Source review and bounded security fixtures cover packaging, URL/decoder boundaries and browser protections. This is not an external certification or a guarantee against all vulnerabilities. Do not expose the local dashboard or downloader on a public network.
 - Current export is A4 RGB, not certified CMYK with bleed, PDF/X, or a prepress report.
-- No open-source license is granted yet: choose one during the public-release review.
+- Software, skill instructions and documentation are licensed under the [MIT License](LICENSE). Example photographs and other media retain their separately recorded rights; the software licence does not grant rights to third-party media or branding. Personal publications and photographs are excluded from the public repository.
 
 See [release readiness](docs/RELEASE_READINESS.md), [independent editorial and technical review](docs/REVIEW_REPORT.md), [roadmap](docs/ROADMAP.md), [security policy](SECURITY.md) and [changelog](CHANGELOG.md).

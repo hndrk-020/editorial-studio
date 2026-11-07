@@ -55,7 +55,9 @@ Keep the plan and brand sheet alongside the publication project as working docum
 
 ## Local dashboard and commands
 
-Within the Editorial Studio project:
+Installing this skill adds instructions and references only. It does not include `studio.py`, the dashboard, Python or PDF dependencies. Before using this project's renderer, locate a complete Editorial Studio checkout and its Python environment. If absent, follow the [local application setup](https://github.com/hndrk-020/editorial-studio/blob/main/docs/LOCAL_INSTALLATION.md#2-set-up-the-local-pdf-application). Preserve existing skill copies, settings and private publications when installing or updating.
+
+Within the complete Editorial Studio project, use its configured Python environment:
 
 ```bash
 python studio.py serve
@@ -65,6 +67,7 @@ python -m unittest discover -s tests -v
 ```
 
 - On Windows, use `run_windows.cmd`; on macOS/Linux, use `run_mac_linux.sh`.
+- Run the platform launcher with `--check` for read-only setup diagnostics. A successful file/dependency check is separate from AI-tool discovery, image approval and PDF visual review.
 - The dashboard asks the creative brief in two steps, shows two style cards, and unlocks story/image production only after a choice.
 - Use **Research imagery** for each cover/story to find original source pages. If the editor has an exact **direct HTTPS image URL**, the optional importer downloads its bytes, checks basic format and size, saves locally and marks it **UNAPPROVED**. A human must review and approve it separately.
 - The renderer supports magazine (up to 12 feature pages) and A4 portrait onepager (up to 3 features). Additional layouts need engineering rather than pretending the current renderer supports them.
