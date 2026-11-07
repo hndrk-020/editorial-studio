@@ -16,3 +16,22 @@
 @media(max-width:360px){.install-hero{padding-top:16px;gap:12px}.install-hero h1{font-size:34px}.hero-description{font-size:14px}.quick-tabs>span{display:none}.quick-tabs button{min-height:36px}.hero-next>span{max-width:240px}}
 
 #quick-codex-code{max-height:none}
+
+.support-strip{display:grid;grid-template-columns:1.5fr 1fr;align-items:center;gap:35px;margin-bottom:65px;padding:32px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.support-strip h2{font-size:34px;letter-spacing:-.035em;margin:12px 0}.support-strip p{font-size:14px;max-width:530px}.support-strip .eyebrow{color:var(--red);font-size:9px}.support-action{justify-self:end}.coffee-link{display:flex;justify-content:space-between;align-items:center;gap:35px;min-height:48px;padding:12px 22px;border:1px solid var(--ink);border-radius:28px;text-decoration:none;font-size:14px;transition:background .2s,color .2s}.coffee-link:hover{background:var(--ink);color:var(--paper)}.support-action p{font-size:11px;line-height:1.5;margin-top:12px}.support-strip+.first-brief{border-top:0}@media(max-width:700px){.support-strip{grid-template-columns:1fr;gap:22px;margin-bottom:35px;padding:28px 0}.support-strip h2{font-size:30px}.support-action{justify-self:start}}
+
+/* A short, deliberate transition follows the visitor's selection. */
+.quick-tabs button{transition:background-color .2s ease,color .2s ease,box-shadow .2s ease}
+.quick-tabs button[aria-selected=true]{box-shadow:0 3px 8px #25272018}
+.quick-install [role=tabpanel]:not([hidden]){animation:prompt-arrive .22s ease-out}
+@keyframes prompt-arrive{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:1150px){.quick-tabs>span{display:none}}
+@media(max-width:360px){.quick-tabs{gap:3px}.quick-tabs button{padding:8px 10px}}
+@media(prefers-reduced-motion:reduce){.quick-tabs button{transition:none}.quick-install [role=tabpanel]:not([hidden]){animation:none}}
+
+/* Each tool gets the same space, typography and motion. */
+.quick-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+.quick-tabs>span{display:none}
+.quick-tabs button{padding:8px 3px;font-size:11px;min-height:44px;line-height:1.2;animation:tool-welcome .5s ease-out both}
+@keyframes tool-welcome{from{opacity:.55;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:360px){.quick-tabs button{font-size:10px;padding:8px 2px}}
+@media(prefers-reduced-motion:reduce){.quick-tabs button{animation:none}}

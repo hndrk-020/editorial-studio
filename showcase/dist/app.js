@@ -13,7 +13,7 @@ function selectInstall(tab,focus=false){installTabs.forEach(t=>{const selected=t
 installTabs.forEach((tab,i)=>{tab.addEventListener('click',()=>selectInstall(tab));tab.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();selectInstall(installTabs[e.key==='Home'?0:e.key==='End'?1:1-i],true)}})});
 const quickTabs=[...document.querySelectorAll('[data-quick]')];
 function selectQuick(tab,focus=false){quickTabs.forEach(t=>{const active=t===tab;t.setAttribute('aria-selected',String(active));t.tabIndex=active?0:-1;document.getElementById('quick-'+t.dataset.quick).hidden=!active});document.querySelector('.quick-status').textContent='';if(focus)tab.focus()}
-quickTabs.forEach((tab,i)=>{tab.addEventListener('click',()=>selectQuick(tab));tab.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();selectQuick(quickTabs[e.key==='Home'?0:e.key==='End'?quickTabs.length-1:(i+1)%quickTabs.length],true)}})});
+quickTabs.forEach((tab,i)=>{tab.addEventListener('click',()=>selectQuick(tab));tab.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();selectQuick(quickTabs[e.key==='Home'?0:e.key==='End'?quickTabs.length-1:(i+(e.key==='ArrowLeft'?-1:1)+quickTabs.length)%quickTabs.length],true)}})});
 let toastTimer;document.querySelectorAll('[data-copy]').forEach(button=>button.addEventListener('click',async()=>{
  const source=document.getElementById(button.dataset.copy),value=source.textContent,toast=document.getElementById('toast');
  const destination=button.dataset.destination||(button.dataset.copy.includes('command')&&!button.dataset.copy.includes('install')?'your terminal':'Codex');

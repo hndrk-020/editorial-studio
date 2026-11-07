@@ -34,3 +34,13 @@ The live Site uses its separately managed Sites source repository. A commit to t
 Never store source-repository tokens in this directory. The main skill release ZIP intentionally excludes the showcase: `release-files.json` remains the explicit skill/application distribution inventory.
 
 The opening hero uses a split layout on desktop and places the full film immediately after the headline on mobile. Check the complete video and pause control at scroll position zero on small and large viewports.
+
+## Optional support
+
+The installation section links to https://buymeacoffee.com/hndrk in a separate tab. Support is optional and does not unlock features. Amount selection and payment are handled on Buy Me a Coffee; no payment widget, tracking script or card fields are embedded here.
+
+## Grok Build setup
+The Grok tab targets Grok Build, not the consumer chat app. Its complete-folder prompt uses `~/.grok/skills/editorial-studio` and asks for discovery verification. See https://docs.x.ai/build/features/skills-plugins-marketplaces. This is documentation-based compatibility; no Grok runtime installation test has been performed. Tab transitions follow user selection and honor reduced motion.
+
+## Additional setup choices
+Cursor and Gemini CLI have equal-width tabs, the same entrance animation and user-controlled prompt transitions. All motion respects reduced motion. Setup prompts follow https://cursor.com/help/customization/skills and https://geminicli.com/docs/cli/skills/ and preserve existing installations. These integrations have not been runtime-tested. Gemini discovery uses `/skills list`, not an assumed `/editorial-studio` command.
