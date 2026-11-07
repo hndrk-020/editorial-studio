@@ -35,3 +35,11 @@
 @keyframes tool-welcome{from{opacity:.55;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:360px){.quick-tabs button{font-size:10px;padding:8px 2px}}
 @media(prefers-reduced-motion:reduce){.quick-tabs button{animation:none}}
+
+/* Lead with the publication a visitor wants to make. */
+.install-hero h1{font-size:clamp(42px,4.5vw,64px);letter-spacing:-.045em}
+.install-invitation{font-size:12px;line-height:1.45;margin:0 0 12px;color:var(--ink)}
+.use-cases{display:flex;flex-wrap:wrap;gap:7px 16px;font-size:11px;color:var(--ink)}
+.use-cases span{white-space:nowrap}.use-cases span:before{content:'↗';color:var(--red);margin-right:5px}
+@media(max-width:760px){.install-hero h1{font-size:clamp(34px,8.3vw,50px);line-height:1.04}.install-invitation{font-size:10px;margin-bottom:10px}.use-cases{font-size:10px;gap:7px 12px}}
+@media(max-width:360px){.install-hero h1{font-size:31px}.hero-description{font-size:13px}}
