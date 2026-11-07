@@ -1,6 +1,12 @@
 # Editorial Studio - user content is local, not repository source.
 /projects/
 /output/
+/outputs/
+/work/
+/private/
+/photos/
+/marketing/
+/account-data/
 /dist/
 /.venv/
 /.env

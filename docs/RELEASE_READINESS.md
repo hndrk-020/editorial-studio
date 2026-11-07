@@ -1,6 +1,8 @@
-# Private release readiness — 0.4.0
+# Historical private release review — 0.4.0
 
-This release targets the existing single-user local skill/dashboard. It does not turn the application into a hosted PDF service. The GitHub repository and personal publication data remain private.
+> **Current access status, 7 November 2026:** the repository is now publicly readable; no private invitation is required for the standard download. Personal publications and photos remain excluded. The review below records the earlier private-release scope and evidence; public visibility does not grant an open-source licence or establish additional testing. See README.md for current installation prerequisites and the unresolved licence decision.
+
+This release targets the existing single-user local skill/dashboard. It does not turn the application into a hosted PDF service. At the time of this review, the GitHub repository and personal publication data were private.
 
 ## Security review and remediation
 
@@ -27,7 +29,7 @@ Discovery, two-direction selection, exact-photo human approval, authentic subjec
 
 ## Public showcase boundary
 
-The approved https://magazine.10myth.com site is live as a public workflow showcase and installation guide. It does not accept uploads, process PDFs, expose the localhost app or contain personal guides/photos. Installation requires access to the private repository. The custom hostname and HTTPS certificate were verified active. Public software distribution still requires the separate checks in SECURITY.md, including an external review and signed release checksums.
+The approved https://magazine.10myth.com site is live as a public workflow showcase and installation guide. It does not accept uploads, process PDFs, expose the localhost app or contain personal guides/photos. At the time of this review, installation required access to the private repository; current access is described in the notice above. The custom hostname and HTTPS certificate were verified active. Public software distribution still requires the separate checks in SECURITY.md, including an external review and signed release checksums.
 
 ## Final private release verification
 

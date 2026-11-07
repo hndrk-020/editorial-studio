@@ -2,6 +2,7 @@
 from __future__ import annotations
 import json
 import re
+import subprocess
 from pathlib import Path
 from hashlib import sha256
 
@@ -24,6 +25,20 @@ require((ROOT/'.agents/plugins/marketplace.json').exists(),'Missing repo plugin 
 ignore=(ROOT/'.gitignore').read_text(encoding='utf-8') if (ROOT/'.gitignore').exists() else ''
 require('/projects/' in ignore and '/output/' in ignore,
         'Private projects and PDF output must be excluded from Git')
+for directory in ('outputs','work','private','photos','marketing','account-data'):
+    require('/'+directory+'/' in ignore,'Local-only directory must be excluded from Git: '+directory)
+# Ignore rules do not protect files already in the index (or force-added files).
+# Inspect the actual index when in a checkout; extracted release sources have no .git.
+if (ROOT/'.git').exists():
+    try:
+        tracked=subprocess.run(['git','-C',str(ROOT),'ls-files','-z'],check=True,capture_output=True,timeout=15).stdout.decode('utf-8').split('\0')
+        from package_release import LOCAL_DATA_COMPONENTS
+        for name in filter(None,tracked):
+            top=name.split('/',1)[0].casefold()
+            require(top not in LOCAL_DATA_COMPONENTS and not (top.startswith('.env') and top!='.env.example'),
+                    'Local-only data is tracked in Git: '+name)
+    except (OSError,subprocess.SubprocessError,UnicodeError) as ex:
+        ERRORS.append('Could not inspect tracked-file boundary: '+str(ex))
 if (SKILL/'SKILL.md').exists():
     body=(SKILL/'SKILL.md').read_text(encoding='utf-8')
     require(body.startswith('---\n'),'SKILL.md missing YAML frontmatter')

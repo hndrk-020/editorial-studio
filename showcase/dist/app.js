@@ -18,7 +18,7 @@ let toastTimer;document.querySelectorAll('[data-copy]').forEach(button=>button.a
  const source=document.getElementById(button.dataset.copy),value=source.textContent,toast=document.getElementById('toast');
  const destination=button.dataset.destination||(button.dataset.copy.includes('command')&&!button.dataset.copy.includes('install')?'your terminal':'Codex');
  const status=button.closest('.quick-install')?.querySelector('.quick-status');
- try{await navigator.clipboard.writeText(value);toast.textContent='Copied. Paste it into '+destination+'.';if(status)status.textContent='Copied. Open '+destination+' and paste this prompt to install. Your existing files stay yours.'}
+ try{await navigator.clipboard.writeText(value);toast.textContent='Copied. Paste it into '+destination+'.';if(status)status.textContent='Copied. Paste into '+destination+' to begin setup. Review permission or replacement prompts; this click has not installed anything.'}
  catch{toast.textContent='Copy unavailable. Select the prompt and copy it manually.';if(status)status.textContent=toast.textContent;const range=document.createRange();range.selectNodeContents(source);const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range)}
  toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),4500);
 }));

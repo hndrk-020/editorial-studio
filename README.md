@@ -14,7 +14,7 @@ Currently implemented: a local dashboard, two fixed visual themes, a human-super
 
 ## Quick start
 
-For a complete Windows walkthrough, see the [local skill installation guide](docs/LOCAL_INSTALLATION.md), including verification, updates, private-repository access and optional dashboard setup.
+For a complete Windows walkthrough, see the [local skill installation guide](docs/LOCAL_INSTALLATION.md), including verification, updates and the separate dashboard setup required for this project's PDF renderer.
 
 **Windows:** Install Python 3.11+ from https://python.org/downloads/ and enable Python on PATH. Download the repository or ZIP, extract it, then double-click `run_windows.cmd`. First start requires internet for dependencies. The local studio opens at `http://127.0.0.1:8765`.
 
@@ -26,7 +26,11 @@ For a complete Windows walkthrough, see the [local skill installation guide](doc
 $editorial-studio Create a photography-led architecture onepager for design readers. Start with the brief, review my inspiration URL, and show two distinct creative directions before production.
 ```
 
-The skill runs instructions. It does **not** install a hosted app or automatically install Python dependencies.
+The skill provides instructions and references. It does **not** include the PDF application, install a hosted app or automatically install Python dependencies. To use this project's renderer, keep the full repository and follow the Python application setup above.
+
+The dashboard and PDF export run locally. Installing the skill does not upload publications; content you share with your chosen AI tool is handled under that provider's settings and terms. You need your own access to that AI tool.
+
+Installation evidence (7 November 2026): the Windows source installer copied all nine skill files unchanged to an isolated test profile, and a fresh Codex process loaded the project-local skill and its references. This was not a clean-machine test or a verified public ZIP-download journey. Claude Code, Grok Build, Cursor and Gemini CLI setup prompts follow their vendors' documentation but have not been runtime-tested here.
 
 ## Architecture
 
@@ -65,9 +69,11 @@ Tests contain **synthetic, explicitly labeled fixtures only**. They do not prove
 
 ## GitHub private-first and installation
 
-Read [GitHub private → public release guide](docs/GITHUB_PRIVATE_TO_PUBLIC.md). This repository is publicly readable. The linked guide retains the original private-first release process as historical guidance. Do not commit personal projects or the Cascais photo library. Keep project data in `projects/` and all exports in `output/`; both directories are excluded from Git.
+Read [GitHub private → public release guide](docs/GITHUB_PRIVATE_TO_PUBLIC.md). This repository is publicly readable. The linked guide retains the original private-first release process as historical guidance. Do not commit personal projects or photo libraries. Keep project data in `projects/` and all exports in `output/`; both directories are excluded from Git.
 
-For Codex, the supported copy/paste path is `$skill-installer` with the GitHub directory URL after you create the repo. For ChatGPT-wide plugin discovery, use the portable `plugins/editorial-studio/` and `.agents/plugins/marketplace.json` with the Plugin Directory; public directory distribution has a separate submission/review process. The plugin **does not bundle the running local dashboard**.
+Personal publications, photo approvals, local settings, account details and business planning are not product source. Keep business working material outside this repository. Public examples belong here only after a deliberate rights, privacy and publication review; do not copy a personal project into the showcase. The release packager uses an explicit source inventory rather than collecting everything in the workspace.
+
+For Codex, the supported copy/paste path is `$skill-installer` with the existing public GitHub directory URL. For ChatGPT-wide plugin discovery, use the portable `plugins/editorial-studio/` and `.agents/plugins/marketplace.json` with the Plugin Directory; public directory distribution has a separate submission/review process. The plugin **does not bundle the running local dashboard**.
 
 ## Status and limitations
 

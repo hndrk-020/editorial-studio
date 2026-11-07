@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib,json,stat,subprocess,sys,zipfile
 from pathlib import Path,PurePosixPath
 ROOT=Path(__file__).resolve().parents[1]
+LOCAL_DATA_COMPONENTS=frozenset({'projects','output','outputs','work','private','photos','marketing','account-data','.venv'})
 
 def release_files(root: Path) -> list[Path]:
     names=json.loads((root/'release-files.json').read_text(encoding='utf-8'))
@@ -13,7 +14,7 @@ def release_files(root: Path) -> list[Path]:
         relative=PurePosixPath(name)
         if not relative.parts or relative.is_absolute() or relative.as_posix()!=name or any(p in ('','..','.') for p in relative.parts) or '\\' in name or ':' in name:
             raise ValueError('Unsafe release filename')
-        if any(p in ('projects','output','outputs','.git','.venv','dist') or p.startswith('.env') for p in relative.parts):
+        if any(p.casefold() in LOCAL_DATA_COMPONENTS|{'.git','dist'} or p.casefold().startswith('.env') for p in relative.parts):
             raise ValueError('Private data cannot enter a release')
         current=root
         for part in relative.parts:
