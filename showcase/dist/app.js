@@ -11,7 +11,17 @@ tabs.forEach((tab,i)=>{tab.addEventListener('click',()=>selectStep(i));tab.addEv
 const installTabs=[...document.querySelectorAll('[data-install]')];
 function selectInstall(tab,focus=false){installTabs.forEach(t=>{const selected=t===tab;t.setAttribute('aria-selected',String(selected));t.tabIndex=selected?0:-1;document.getElementById('install-'+t.dataset.install).hidden=!selected});if(focus)tab.focus()}
 installTabs.forEach((tab,i)=>{tab.addEventListener('click',()=>selectInstall(tab));tab.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();selectInstall(installTabs[e.key==='Home'?0:e.key==='End'?1:1-i],true)}})});
-let toastTimer;document.querySelectorAll('[data-copy]').forEach(button=>button.addEventListener('click',async()=>{const value=document.getElementById(button.dataset.copy).textContent;const toast=document.getElementById('toast');try{await navigator.clipboard.writeText(value);toast.textContent='Copied. Paste it into '+(button.dataset.copy.includes('command')&&!button.dataset.copy.includes('install')?'your terminal.':'Codex.')}catch{toast.textContent='Copy unavailable. Select and copy the text above.';const range=document.createRange();range.selectNodeContents(document.getElementById(button.dataset.copy));const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range)}toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),4500)}));
+const quickTabs=[...document.querySelectorAll('[data-quick]')];
+function selectQuick(tab,focus=false){quickTabs.forEach(t=>{const active=t===tab;t.setAttribute('aria-selected',String(active));t.tabIndex=active?0:-1;document.getElementById('quick-'+t.dataset.quick).hidden=!active});document.querySelector('.quick-status').textContent='';if(focus)tab.focus()}
+quickTabs.forEach((tab,i)=>{tab.addEventListener('click',()=>selectQuick(tab));tab.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();selectQuick(quickTabs[e.key==='Home'?0:e.key==='End'?quickTabs.length-1:(i+1)%quickTabs.length],true)}})});
+let toastTimer;document.querySelectorAll('[data-copy]').forEach(button=>button.addEventListener('click',async()=>{
+ const source=document.getElementById(button.dataset.copy),value=source.textContent,toast=document.getElementById('toast');
+ const destination=button.dataset.destination||(button.dataset.copy.includes('command')&&!button.dataset.copy.includes('install')?'your terminal':'Codex');
+ const status=button.closest('.quick-install')?.querySelector('.quick-status');
+ try{await navigator.clipboard.writeText(value);toast.textContent='Copied. Paste it into '+destination+'.';if(status)status.textContent='Copied. Open '+destination+' and paste this prompt to install. Your existing files stay yours.'}
+ catch{toast.textContent='Copy unavailable. Select the prompt and copy it manually.';if(status)status.textContent=toast.textContent;const range=document.createRange();range.selectNodeContents(source);const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range)}
+ toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),4500);
+}));
 
 // Native controls remain available if JavaScript cannot initialize.
 const heroVideo=document.getElementById('hero-video');

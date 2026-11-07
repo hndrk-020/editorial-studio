@@ -2,9 +2,9 @@
 
 **Photo-led publications with an editorial brief, two art directions, real image provenance and verified offline PDFs.**
 
-Visit [magazine.10myth.com](https://magazine.10myth.com) for the public showcase and step-by-step installation guide. Repository access is required to install the skill. The website source is in [showcase/](showcase/README.md).
+Visit [magazine.10myth.com](https://magazine.10myth.com) for the public showcase and step-by-step installation guide. The source is public; no repository invitation is required to install. The website source is in [showcase/](showcase/README.md).
 
-> **Private release · v0.4.0 · local workflow and dashboard; repository access required.**
+> **Public source · v0.4.0 · local workflow and dashboard.**
 
 ## What it does
 
@@ -65,7 +65,7 @@ Tests contain **synthetic, explicitly labeled fixtures only**. They do not prove
 
 ## GitHub private-first and installation
 
-Read [GitHub private → public release guide](docs/GITHUB_PRIVATE_TO_PUBLIC.md). For now, start with a **private GitHub repository**. Do not commit personal projects or the Cascais photo library. Keep project data in `projects/` and all exports in `output/`; both directories are excluded from Git.
+Read [GitHub private → public release guide](docs/GITHUB_PRIVATE_TO_PUBLIC.md). This repository is publicly readable. The linked guide retains the original private-first release process as historical guidance. Do not commit personal projects or the Cascais photo library. Keep project data in `projects/` and all exports in `output/`; both directories are excluded from Git.
 
 For Codex, the supported copy/paste path is `$skill-installer` with the GitHub directory URL after you create the repo. For ChatGPT-wide plugin discovery, use the portable `plugins/editorial-studio/` and `.agents/plugins/marketplace.json` with the Plugin Directory; public directory distribution has a separate submission/review process. The plugin **does not bundle the running local dashboard**.
 

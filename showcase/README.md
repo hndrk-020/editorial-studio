@@ -1,6 +1,6 @@
 # Editorial Studio showcase
 
-Live at https://magazine.10myth.com. This directory contains the source of the public showcase and installation guide, hosted through Sites on Cloudflare. The Editorial Studio GitHub repository remains private.
+Live at https://magazine.10myth.com. This directory contains the source of the public showcase and installation guide, hosted through Sites on Cloudflare. The Editorial Studio GitHub source repository is public.
 
 ## Files
 
@@ -27,7 +27,7 @@ Open http://127.0.0.1:8790. No build or dependency installation is required. Sto
 
 ## Checks and publishing
 
-Run `node --check dist/app.js`. Inspect desktop and mobile layouts; test tab selection with the mouse and arrow keys, copy buttons and expandable dashboard instructions. Check internal anchors and local resource paths. Installation commands must continue to describe private-repository authentication accurately.
+Run `node --check dist/app.js`. Inspect desktop and mobile layouts; test tab selection with the mouse and arrow keys, copy buttons and expandable dashboard instructions. Check internal anchors and local resource paths. Installation commands must accurately describe public downloads and preserve existing installations.
 
 The live Site uses its separately managed Sites source repository. A commit to this GitHub repository does **not** deploy the website. To publish changes, use the Sites skill with the existing `project_id` in `.openai/hosting.json`, obtain fresh repository access through the Sites tool, and synchronize only this directory's website source into that Site checkout. Preserve its identity; do not create a replacement Site. Follow the Sites source-helper, save-version and deployment workflow, then verify https://magazine.10myth.com over HTTPS.
 

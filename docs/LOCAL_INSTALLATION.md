@@ -1,15 +1,15 @@
 # Install Editorial Studio locally on Windows
 
-Use this guide with the private [hndrk-020/editorial-studio repository](https://github.com/hndrk-020/editorial-studio). You need repository read access. Choose one installation route.
+Use this guide with the public [hndrk-020/editorial-studio repository](https://github.com/hndrk-020/editorial-studio). No repository invitation is required. Choose one installation route.
 
 
 1. Open Codex and sign in.
-   Open GitHub in your browser and sign in as hndrk-020, or an account with read access to the private repository.
+   The public GitHub source download does not require signing in.
 
 2. Download the source.
    Open https://github.com/hndrk-020/editorial-studio
    Select Code > Download ZIP. This downloads the current branch source; avoid an older release ZIP if you want the enhanced workflow.
-   A 404 usually means you are signed into the wrong GitHub account or lack access.
+   If the link returns 404, check the repository URL and branch before retrying.
 
 3. Extract the ZIP completely.
    Right-click the downloaded ZIP > Extract All.
@@ -47,7 +47,7 @@ Use this guide with the private [hndrk-020/editorial-studio repository](https://
 Choose this route instead of the Windows installer, not in addition to it.
 Paste into Codex:
 $skill-installer install https://github.com/hndrk-020/editorial-studio/tree/main/.agents/skills/editorial-studio
-The bundled installer normally targets $CODEX_HOME/skills, defaulting to ~/.codex/skills. Private-repository installation requires usable Git credentials or a supported GitHub token; browser or connector login alone may not authenticate local Git.
+The bundled installer normally targets $CODEX_HOME/skills, defaulting to ~/.codex/skills. The standard public download requires no private-repository token. If you use a private fork, authenticate local Git or use a supported GitHub token; browser login alone may not authenticate Git.
 If it reports an existing destination, retain the current working installation or back it up before a deliberate update. The bundled installer refuses to overwrite an existing skill directory.
 It should be available on the next turn; restart Codex if discovery has not refreshed.
 
