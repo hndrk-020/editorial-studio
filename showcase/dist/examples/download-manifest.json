@@ -1,0 +1,50 @@
+[
+  {
+    "project": "startup-introduction",
+    "pdf": "Phase1_Examples_Startup_Introduction.pdf",
+    "pdf_bytes": 538900,
+    "pdf_sha256": "6f3c7b027e733bdd0e8aaaf9f013596cb1fc03e1a1554fb59c2a9120a4988a2a",
+    "pages": 1,
+    "links": 1,
+    "zip": "Phase1_Examples_Startup_Introduction_Source.zip",
+    "zip_bytes": 1565167,
+    "zip_sha256": "8e02c9e578c980ab192d8797fb6e356011b242e429798bb8bf8804c5e0757096",
+    "cover": "Phase1_Examples_Startup_Introduction_Cover.jpg",
+    "cover_bytes": 55651,
+    "package_files": 20,
+    "privacy_scan": "pass; no private user paths or personal publication references",
+    "zip_integrity": "pass"
+  },
+  {
+    "project": "creator-case-study",
+    "pdf": "Phase1_Examples_Creator_Case_Study.pdf",
+    "pdf_bytes": 1482989,
+    "pdf_sha256": "4c2bc97261d6fedd0ca19ef4e4363e3bed2fca86f75c3924272f432444a61227",
+    "pages": 6,
+    "links": 3,
+    "zip": "Phase1_Examples_Creator_Case_Study_Source.zip",
+    "zip_bytes": 1802929,
+    "zip_sha256": "74a15ddf8a10631e96bad1a12e10e92e52cef9a690952086509e930dd3111379",
+    "cover": "Phase1_Examples_Creator_Case_Study_Cover.jpg",
+    "cover_bytes": 58511,
+    "package_files": 20,
+    "privacy_scan": "pass; no private user paths or personal publication references",
+    "zip_integrity": "pass"
+  },
+  {
+    "project": "creator-curation-portfolio",
+    "pdf": "Phase1_Examples_Curation_Portfolio.pdf",
+    "pdf_bytes": 14878330,
+    "pdf_sha256": "862fc280d0dcc8da3cf530d03dc62075d2be35bed78423853e53fc4015694e2b",
+    "pages": 8,
+    "links": 7,
+    "zip": "Phase1_Examples_Curation_Portfolio_Source.zip",
+    "zip_bytes": 4781649,
+    "zip_sha256": "c94db288d1f12dd185d0d53a6f05a000e6faadd3899ca984ef0d84ca113f9be7",
+    "cover": "Phase1_Examples_Curation_Portfolio_Cover.jpg",
+    "cover_bytes": 108523,
+    "package_files": 20,
+    "privacy_scan": "pass; no private user paths or personal publication references",
+    "zip_integrity": "pass"
+  }
+]

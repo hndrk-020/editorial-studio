@@ -13,7 +13,7 @@ Live at https://magazine.10myth.com. This directory contains the source of the p
 The film autoplays muted and loops inline. Its play/pause control remains available; reduced-motion preferences disable autoplay. A failed media load displays the poster image. Native video controls remain if JavaScript is unavailable.
 - `.openai/hosting.json`: existing Site identity and static deployment directory. This is deployment configuration, not a publication manifest or a credential.
 
-The cover illustration is an original typographic concept, explicitly labelled as such. No personal publications, photos, exported PDFs, user project manifests, credentials or dependency directories belong here.
+The cover illustration is an original typographic concept, explicitly labelled as such. Personal publications, photographs, user project manifests, credentials and dependency directories do not belong here. The reviewed public examples are separately authored demo material, explicitly approved for publication.
 
 ## Local preview
 
@@ -33,7 +33,7 @@ The live Site uses its separately managed Sites source repository. A commit to t
 
 Never store source-repository tokens in this directory. The main skill release ZIP intentionally excludes the showcase: `release-files.json` remains the explicit skill/application distribution inventory.
 
-The opening hero uses a split layout on desktop and places the full film immediately after the headline on mobile. Check the complete video and pause control at scroll position zero on small and large viewports.
+The opening hero uses a split layout on desktop. On mobile the primary setup CTA precedes the film. Check that the five tool choices remain equal and usable, and that the film retains its pause control.
 
 ## Optional support
 
@@ -44,3 +44,9 @@ The Grok tab targets Grok Build, not the consumer chat app. Its complete-folder 
 
 ## Additional setup choices
 Cursor and Gemini CLI have equal-width tabs, the same entrance animation and user-controlled prompt transitions. All motion respects reduced motion. Setup prompts follow https://cursor.com/help/customization/skills and https://geminicli.com/docs/cli/skills/ and preserve existing installations. These integrations have not been runtime-tested. Gemini discovery uses `/skills list`, not an assumed `/editorial-studio` command.
+
+## Public example downloads
+
+`dist/examples/` in this GitHub checkout contains three 600px cover previews and the exact download manifest. The larger PDFs and reproduction ZIPs are in the separately managed Sites source checkout, intended for its `dist/examples/` directory; their links use the explicit `https://magazine.10myth.com/examples/` origin. **Deployment is pending after a hosting archive upload failure on 8 November 2026.** These new downloads are not yet live. They are not bundled into the skill/application release archive. After deployment, obtain a matching reviewed asset from that origin when reconstructing a full Site checkout, verify its SHA-256 against the manifest, and preserve the filename. Never substitute a private publication.
+
+The three examples are in English and use Direction A / Field Notes. Their source packets pin the tested renderer commit and reproduce the reviewed page pixels. The six-page case study contains only one substantive feature plus fixed framing/credits; keep that limitation visible. The photographic example is a credited curation, not our original photography. A scoped user approval permits the clearly labelled screenshot and original artwork in the two product examples. This does not grant a general media reuse licence.

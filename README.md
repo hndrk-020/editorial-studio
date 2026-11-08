@@ -40,7 +40,19 @@ The skill provides instructions and references. It does **not** include the PDF 
 
 The dashboard and PDF export run locally. Installing the skill does not upload publications; content you share with your chosen AI tool is handled under that provider's settings and terms. You need your own access to that AI tool.
 
-Installation evidence (7 November 2026): the Windows source installer copied all nine skill files unchanged to an isolated test profile, and a fresh Codex process loaded the project-local skill and its references. This was not a clean-machine test or a verified public ZIP-download journey. Claude Code, Grok Build, Cursor and Gemini CLI setup prompts follow their vendors' documentation but have not been runtime-tested here.
+Installation evidence (7 November 2026): the Windows source installer copied all nine skill files unchanged to an isolated test profile, and a fresh Codex process loaded the project-local skill and its references. The official browser ZIP route and bundled Skill Installer direct-download route also passed in isolated folders; the browser ZIP matched all 70 tracked files at commit `76cd018` (with the declared Windows CRLF conversion). A fresh Python environment installed the locked dependencies. These are fresh-folder tests on an existing Windows computer, not a clean operating-system test. Claude Code, Grok Build, Cursor and Gemini CLI setup prompts follow their vendors' documentation but have not been runtime-tested here.
+
+## Reviewed English examples
+
+Three reviewed PDFs demonstrate the current baseline renderer. Each source packet includes its brief, approved assets, rights records and reproduction instructions pinned to commit `76cd018c1aa56ff5fd6d3e372ff7c201be837bea`. **Download rollout is pending:** the hosting archive upload failed on 8 November 2026, so these new PDFs and source ZIPs are not yet available on the live website. The preview images and checksum inventory below are committed; the existing website remains unchanged.
+
+| Example | Actual output | Preview |
+| --- | --- | --- |
+| Startup introduction | One-page product introduction to Editorial Studio; original artwork and a labelled historical screenshot | [Cover](showcase/dist/examples/Phase1_Examples_Startup_Introduction_Cover.jpg) |
+| Creator case study | Six pages: one substantive feature plus baseline framing and credits; our own design process, without claimed customer results | [Cover](showcase/dist/examples/Phase1_Examples_Creator_Case_Study_Cover.jpg) |
+| Curation portfolio | Eight pages, four credited public-domain landscapes; not a claim of original photographic authorship | [Cover](showcase/dist/examples/Phase1_Examples_Curation_Portfolio_Cover.jpg) |
+
+Digital RGB PDFs, not press-ready exports. [Sizes and SHA-256 checksums](showcase/dist/examples/download-manifest.json). Media keeps its separate rights; the MIT software licence does not relicense the original screenshot or artwork. Personal publications and photo libraries are not included.
 
 ## Architecture
 
@@ -86,6 +98,8 @@ Personal publications, photo approvals, local settings, account details and busi
 For Codex, the supported copy/paste path is `$skill-installer` with the existing public GitHub directory URL. For ChatGPT-wide plugin discovery, use the portable `plugins/editorial-studio/` and `.agents/plugins/marketplace.json` with the Plugin Directory; public directory distribution has a separate submission/review process. The plugin **does not bundle the running local dashboard**.
 
 ## Status and limitations
+
+See the [phase-one installation and example validation](docs/PHASE_ONE_VALIDATION.md) for the 7 November 2026 checks and their limits.
 
 - 41 regression tests passed in an isolated Linux environment on 2026-11-06. See [release readiness](docs/RELEASE_READINESS.md) for current platform validation and limits.
 - Current PDF designs are functional but visually repetitive. More page archetypes and crop/focal-point controls are part of the next design milestone.
