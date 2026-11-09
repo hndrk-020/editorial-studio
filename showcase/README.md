@@ -47,6 +47,16 @@ Cursor and Gemini CLI have equal-width tabs, the same entrance animation and use
 
 ## Public example downloads
 
-`dist/examples/` in this GitHub checkout contains three 600px cover previews and the exact download manifest. The larger PDFs and reproduction ZIPs are in the separately managed Sites source checkout, intended for its `dist/examples/` directory; their links use the explicit `https://magazine.10myth.com/examples/` origin. **Deployment is pending after a hosting archive upload failure on 8 November 2026.** These new downloads are not yet live. They are not bundled into the skill/application release archive. After deployment, obtain a matching reviewed asset from that origin when reconstructing a full Site checkout, verify its SHA-256 against the manifest, and preserve the filename. Never substitute a private publication.
+`dist/examples/` in this GitHub checkout contains three 600px cover previews and the exact download manifest. The larger PDFs and reproduction ZIPs are in the separately managed Sites source checkout and live in its `dist/examples/` directory; their links use the explicit `https://magazine.10myth.com/examples/` origin. Version 9 deployed successfully, and all six live downloads matched the reviewed originals on 9 November 2026. They are not bundled into the skill/application release archive. Obtain a matching reviewed asset from that origin when reconstructing a full Site checkout, verify its SHA-256 against the manifest, and preserve the filename. Never substitute a private publication.
 
 The three examples are in English and use Direction A / Field Notes. Their source packets pin the tested renderer commit and reproduce the reviewed page pixels. The six-page case study contains only one substantive feature plus fixed framing/credits; keep that limitation visible. The photographic example is a credited curation, not our original photography. A scoped user approval permits the clearly labelled screenshot and original artwork in the two product examples. This does not grant a general media reuse licence.
+
+## Windows hosting upload recovery
+
+On 8 November 2026, the native uploader repeatedly failed while sending the helper-generated `.tar.gz` archive. The same source uploaded successfully as an uncompressed `.tar`; all 17 member-file hashes were unchanged. If this failure recurs, keep the helper's verified pushed source commit and convert its package without changing the source or disabling TLS:
+
+```bash
+python -c "import gzip,pathlib,sys; pathlib.Path(sys.argv[2]).write_bytes(gzip.decompress(pathlib.Path(sys.argv[1]).read_bytes()))" site.tar.gz site-upload.tar
+```
+
+Use separate source and output paths outside the checkout. Compare the archive member names and file hashes, then supply the absolute `site-upload.tar` path to the normal Sites save-version call with the same verified commit SHA. Deploy the returned saved version. If a deployment call times out, inspect that version's deployment ID and status before retrying. This workaround changes the archive wrapper only; it does not establish why the compressed upload failed.

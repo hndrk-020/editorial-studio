@@ -1,10 +1,16 @@
 # Phase-one installation and public examples
 
-Reviewed on 7–8 November 2026. Public-facing examples, installation guidance and UI copy are in English. This records bounded checks, not a guarantee that every platform or security condition has been tested.
+Reviewed on 7–9 November 2026. Public-facing examples, installation guidance and UI copy are in English. This records bounded checks, not a guarantee that every platform or security condition has been tested.
 
 ## Deployment status
 
-The installation fix is public. The new homepage example cards and downloads are prepared and locally tested, but not yet live: the hosting service's file upload returned `OpenAI file blob upload ... error sending request` before saving a version. Removing duplicated PDFs from the source ZIPs reduced the deployment archive from 37.3 MB to 23.5 MB without changing the reviewed PDFs or approved imagery; the same upload error remained. The source was pushed to the existing Sites repository, and live version 8 was confirmed unchanged. No successful deployment or live download verification is claimed for these new examples.
+The new homepage and all three English examples are live at [magazine.10myth.com](https://magazine.10myth.com/#examples), Sites version 9, from source commit `f582e7d84d617927a39596a726050153521c91c6`. The compressed archive upload repeatedly returned `OpenAI file blob upload ... error sending request`. Uploading an uncompressed TAR containing the exact same 17 files succeeded; no content, approved imagery, TLS settings or access controls were changed. This is a verified packaging workaround, not a claim about the transport's underlying root cause. The deployment completed successfully on 8 November and live verification finished on 9 November 2026.
+
+All three PDFs and three source ZIPs were downloaded from their live homepage links and matched the approved SHA-256 hashes and byte sizes. ZIP integrity and PDF page counts (1, 6 and 8) passed; the live JSON checksum manifest matched the reviewed inventory. Desktop (1440px) and mobile (390px) layout checks found loaded covers and no horizontal overflow. Browser capture of the wider desktop viewport was clipped; the DOM geometry checks and normal-viewport screenshot provide the recorded evidence. All five installation copy buttons produced their intended prompt in the browser clipboard. No browser JavaScript errors were observed.
+
+Following the live Windows instructions through GitHub's normal **Code → Download ZIP** click downloaded source commit `d38d69d1f89fb640bcf90415524fe50981917f1a`. All 75 tracked files matched, allowing the declared CRLF conversion for two `.cmd` files. The isolated Windows installer and `--check` passed; the direct Skill Installer route also copied all nine skill files exactly. The existing global installation remained byte-for-byte unchanged. A download-helper timeout was resolved by using the normal browser click; the live links themselves worked.
+
+A new ephemeral, read-only Codex session on 9 November discovered that exact browser-downloaded installation and read its skill, editorial-planning and brand-system references. It did not use the global skill as evidence or start a publication. The separate PDF application's earlier runtime checks below remain applicable; no new application code was introduced by this deployment.
 
 ## Installation evidence
 
@@ -37,7 +43,7 @@ The owner approved all eight exact placements from six source images, including 
 
 Each packet pins immutable source commit `76cd018c1aa56ff5fd6d3e372ff7c201be837bea`. A privacy/content scan found no personal publication references, private filesystem paths, personal email addresses, credentials, PDF attachments, JavaScript or launch actions. Source photography remains credited. The MIT grant applies to software, skill instructions and documentation; media retains its stated rights.
 
-See the [download manifest](../showcase/dist/examples/download-manifest.json) for the prepared files. Their planned website paths are present in the showcase source, but await deployment. The photographic PDF is approximately 14.9 MB; source ZIPs are each below 5 MB and omit a duplicate of the separately supplied reviewed PDF. These are digital RGB outputs, not certified press-ready files.
+See the [live examples](https://magazine.10myth.com/#examples) and [download manifest](../showcase/dist/examples/download-manifest.json). The photographic PDF is approximately 14.9 MB; source ZIPs are each below 5 MB and omit a duplicate of the separately supplied reviewed PDF. These are digital RGB outputs, not certified press-ready files.
 
 ## Remaining verification limits
 

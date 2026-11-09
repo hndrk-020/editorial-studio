@@ -44,13 +44,13 @@ Installation evidence (7 November 2026): the Windows source installer copied all
 
 ## Reviewed English examples
 
-Three reviewed PDFs demonstrate the current baseline renderer. Each source packet includes its brief, approved assets, rights records and reproduction instructions pinned to commit `76cd018c1aa56ff5fd6d3e372ff7c201be837bea`. **Download rollout is pending:** the hosting archive upload failed on 8 November 2026, so these new PDFs and source ZIPs are not yet available on the live website. The preview images and checksum inventory below are committed; the existing website remains unchanged.
+Three reviewed PDFs demonstrate the current baseline renderer and are [live on the showcase](https://magazine.10myth.com/#examples). Each source packet includes its brief, approved assets, rights records and reproduction instructions pinned to commit `76cd018c1aa56ff5fd6d3e372ff7c201be837bea`. All six public downloads were verified against the approved originals on 9 November 2026.
 
-| Example | Actual output | Preview |
+| Example | Actual output | Downloads |
 | --- | --- | --- |
-| Startup introduction | One-page product introduction to Editorial Studio; original artwork and a labelled historical screenshot | [Cover](showcase/dist/examples/Phase1_Examples_Startup_Introduction_Cover.jpg) |
-| Creator case study | Six pages: one substantive feature plus baseline framing and credits; our own design process, without claimed customer results | [Cover](showcase/dist/examples/Phase1_Examples_Creator_Case_Study_Cover.jpg) |
-| Curation portfolio | Eight pages, four credited public-domain landscapes; not a claim of original photographic authorship | [Cover](showcase/dist/examples/Phase1_Examples_Curation_Portfolio_Cover.jpg) |
+| Startup introduction | One-page product introduction to Editorial Studio; original artwork and a labelled historical screenshot | [PDF](https://magazine.10myth.com/examples/Phase1_Examples_Startup_Introduction.pdf) · [Source](https://magazine.10myth.com/examples/Phase1_Examples_Startup_Introduction_Source.zip) |
+| Creator case study | Six pages: one substantive feature plus baseline framing and credits; our own design process, without claimed customer results | [PDF](https://magazine.10myth.com/examples/Phase1_Examples_Creator_Case_Study.pdf) · [Source](https://magazine.10myth.com/examples/Phase1_Examples_Creator_Case_Study_Source.zip) |
+| Curation portfolio | Eight pages, four credited public-domain landscapes; not a claim of original photographic authorship | [PDF](https://magazine.10myth.com/examples/Phase1_Examples_Curation_Portfolio.pdf) · [Source](https://magazine.10myth.com/examples/Phase1_Examples_Curation_Portfolio_Source.zip) |
 
 Digital RGB PDFs, not press-ready exports. [Sizes and SHA-256 checksums](showcase/dist/examples/download-manifest.json). Media keeps its separate rights; the MIT software licence does not relicense the original screenshot or artwork. Personal publications and photo libraries are not included.
 
